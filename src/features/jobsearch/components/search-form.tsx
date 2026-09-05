@@ -14,7 +14,7 @@ export function SearchForm({ query }: { query: JobSearchQuery }) {
     <form
       method="get"
       action="/suche"
-      className="grid gap-4 sm:grid-cols-[2fr_2fr_1fr_auto] sm:items-end"
+      className="grid gap-4 sm:grid-cols-[2fr_2fr_1fr_1.3fr_auto] sm:items-end"
     >
       <label className="block text-sm font-medium text-zinc-700">
         {SEARCH_LABELS.what}
@@ -47,6 +47,16 @@ export function SearchForm({ query }: { query: JobSearchQuery }) {
             </option>
           ))}
         </select>
+      </label>
+
+      <label className="block text-sm font-medium text-zinc-700">
+        {SEARCH_LABELS.startFrom}
+        <input
+          name="start"
+          type="date"
+          defaultValue={query.startFrom ?? ""}
+          className={inputClass}
+        />
       </label>
 
       <button

@@ -2,7 +2,14 @@ import { z } from "zod";
 
 import type { JobSearchQuery } from "./types";
 
-/** Значения по умолчанию из критериев поиска в CLAUDE.md. */
+/**
+ * Целевой год начала Ausbildung. Единственное место, где он задан:
+ * от него считается дефолт фильтра «Старт не раньше». Через год поменять здесь.
+ */
+export const TARGET_START_YEAR = 2027;
+export const DEFAULT_START_FROM = `${TARGET_START_YEAR}-01-01`;
+
+/** Остальные значения по умолчанию из критериев поиска в CLAUDE.md. */
 export const DEFAULT_WHAT = "Fachinformatiker";
 export const DEFAULT_WHERE = "Straelen";
 export const DEFAULT_RADIUS_KM = 50;
@@ -29,21 +36,36 @@ const schema = z.object({
       (RADIUS_OPTIONS as readonly number[]).includes(km),
     )
     .catch(DEFAULT_RADIUS_KM),
+  start: z.iso.date().nullable().catch(DEFAULT_START_FROM),
   page: z.coerce.number().int().min(1).max(500).catch(1),
 });
 
-/** Разбирает параметры адреса /suche. Любое кривое значение заменяется значением по умолчанию. */
+/**
+ * Разбирает параметры адреса /suche. Любое кривое значение заменяется значением по умолчанию.
+ * Отсутствующий параметр start даёт дефолт, пустой (поле очищено) выключает фильтр.
+ */
 export function parseSearchParams(raw: RawSearchParams): JobSearchQuery {
+  const rawStart = first(raw.start);
+  const start =
+    rawStart === undefined
+      ? DEFAULT_START_FROM
+      : rawStart.trim() === ""
+        ? null
+        : rawStart.trim();
+
   const parsed = schema.parse({
     was: first(raw.was) ?? DEFAULT_WHAT,
     wo: first(raw.wo) ?? DEFAULT_WHERE,
     umkreis: first(raw.umkreis) ?? DEFAULT_RADIUS_KM,
+    start,
     page: first(raw.page) ?? 1,
   });
+
   return {
     what: parsed.was,
     where: parsed.wo,
     radiusKm: parsed.umkreis,
+    startFrom: parsed.start,
     page: parsed.page,
     pageSize: PAGE_SIZE,
   };
@@ -59,6 +81,8 @@ export function buildSearchHref(
     was: merged.what,
     wo: merged.where,
     umkreis: String(merged.radiusKm),
+    // Пустое значение сохраняет выключенный фильтр при листании страниц.
+    start: merged.startFrom ?? "",
   });
   if (merged.page > 1) params.set("page", String(merged.page));
   return `/suche?${params.toString()}`;

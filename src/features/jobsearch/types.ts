@@ -1,15 +1,24 @@
 import type { ApplicationSource } from "@/db/schema";
 
-/** Параметры поиска, общие для всех источников. */
-export type JobSearchQuery = {
+/** Параметры одного запроса к источнику: только то, что источник умеет сам. */
+export type JobSourceQuery = {
   /** Профессия или ключевые слова, например "Fachinformatiker". */
   what: string;
   /** Город или почтовый индекс. */
   where: string;
   radiusKm: number;
-  /** Номер страницы, начиная с 1. */
+  /** Номер страницы источника, начиная с 1. */
   page: number;
   pageSize: number;
+};
+
+/**
+ * Параметры поиска на странице /suche: то же плюс фильтры,
+ * которые применяет общий слой (search.ts), а не источник.
+ */
+export type JobSearchQuery = JobSourceQuery & {
+  /** Минимальная дата старта, YYYY-MM-DD. null — фильтр выключен. Верхней границы нет. */
+  startFrom: string | null;
 };
 
 export type JobKind = "ausbildung" | "duales-studium";
@@ -69,5 +78,5 @@ export interface JobSource {
   id: ApplicationSource;
   /** Название для интерфейса. */
   name: string;
-  search(query: JobSearchQuery): Promise<JobSearchResult>;
+  search(query: JobSourceQuery): Promise<JobSearchResult>;
 }
