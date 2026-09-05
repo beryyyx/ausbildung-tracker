@@ -20,10 +20,16 @@ import { type ApplicationStatus, applications } from "./applications";
 export const GMAIL_ACCOUNT_ID = 1;
 
 /**
- * Что происходит с предложением: ждёт решения, применено к заявке
- * или помечено как «не про заявку». Обработанные письма не предлагаются повторно.
+ * Что происходит с предложением: ждёт решения, применено к заявке (статус сменён),
+ * учтено без смены статуса (переписка записана в заметки заявки) или помечено
+ * как «не про заявку». Обработанные письма не предлагаются повторно.
  */
-export const GMAIL_MESSAGE_STATES = ["pending", "applied", "dismissed"] as const;
+export const GMAIL_MESSAGE_STATES = [
+  "pending",
+  "applied",
+  "noted",
+  "dismissed",
+] as const;
 
 export type GmailMessageState = (typeof GMAIL_MESSAGE_STATES)[number];
 
@@ -121,9 +127,9 @@ export const gmailMessages = sqliteTable(
     receivedAt: integer("received_at", { mode: "timestamp" }).notNull(),
 
     /**
-     * Заявка, к которой письмо применено. При синхронизации ставится, только если
-     * подошла ровно одна заявка; при нескольких кандидатах остаётся пустой,
-     * и выбор делает пользователь. Список кандидатов пересчитывается при показе.
+     * Заявка, к которой письмо применено или учтено. При синхронизации ставится,
+     * только если подошла ровно одна заявка; при нескольких кандидатах остаётся
+     * пустой, и выбор делает пользователь. Список кандидатов пересчитывается при показе.
      */
     applicationId: integer("application_id").references(() => applications.id, {
       onDelete: "set null",

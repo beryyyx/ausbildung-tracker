@@ -6,11 +6,14 @@ import { z } from "zod";
 
 import { db } from "@/db";
 import { APPLICATION_STATUSES, gmailMessages } from "@/db/schema";
-import { setApplicationStatus } from "@/features/applications/actions";
+import {
+  appendApplicationNote,
+  setApplicationStatus,
+} from "@/features/applications/actions";
 import { getApplication } from "@/features/applications/queries";
 
 import { deleteAccount } from "./account";
-import { GMAIL_TEXTS } from "./labels";
+import { GMAIL_TEXTS, formatNoteLine } from "./labels";
 import { getPendingMessage } from "./queries";
 import { runGmailSync } from "./sync";
 import type { SyncOutcome } from "./types";
@@ -73,6 +76,44 @@ export async function applySuggestion(
   await db
     .update(gmailMessages)
     .set({ applicationId, state: "applied" })
+    .where(eq(gmailMessages.id, messageId));
+
+  revalidatePath(GMAIL_PATH);
+  return { ok: true };
+}
+
+/**
+ * «Учесть без смены статуса»: письмо — переписка по заявке, а не решение по ней.
+ * Письмо привязывается к выбранной заявке, в её заметки дописывается строка
+ * с датой, отправителем и темой, статус заявки не меняется.
+ */
+export async function noteSuggestion(
+  messageId: number,
+  applicationId: number,
+): Promise<SuggestionResult> {
+  if (
+    !idSchema.safeParse(messageId).success ||
+    !idSchema.safeParse(applicationId).success
+  ) {
+    return { ok: false, message: GMAIL_TEXTS.noteError };
+  }
+
+  const message = await getPendingMessage(messageId);
+  if (!message) return { ok: false, message: GMAIL_TEXTS.noteError };
+
+  // Существование заявки и лимит длины заметок проверяет модуль заявок.
+  const appended = await appendApplicationNote(applicationId, formatNoteLine(message));
+  if (!appended.ok) {
+    return {
+      ok: false,
+      message:
+        appended.reason === "too-long" ? GMAIL_TEXTS.noteTooLong : GMAIL_TEXTS.noteError,
+    };
+  }
+
+  await db
+    .update(gmailMessages)
+    .set({ applicationId, state: "noted" })
     .where(eq(gmailMessages.id, messageId));
 
   revalidatePath(GMAIL_PATH);

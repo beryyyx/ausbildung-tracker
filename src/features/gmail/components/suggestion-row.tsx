@@ -8,8 +8,8 @@ import type { GmailMessage } from "@/db/schema";
 import { STATUS_LABELS } from "@/features/applications/labels";
 import { formatDateTime } from "@/lib/dates";
 
-import { applySuggestion, dismissSuggestion } from "../actions";
-import { GMAIL_TEXTS, multipleCandidatesText } from "../labels";
+import { applySuggestion, dismissSuggestion, noteSuggestion } from "../actions";
+import { GMAIL_TEXTS, formatSender, multipleCandidatesText } from "../labels";
 import type { ApplicationOption } from "../types";
 
 type Props = {
@@ -25,7 +25,9 @@ function optionLabel(application: ApplicationOption): string {
 }
 
 /**
- * Одно предложение: письмо, выбор заявки и статуса, кнопки. Заявка предвыбрана,
+ * Одно предложение: письмо, выбор заявки и статуса, три действия. «Применить»
+ * меняет статус заявки, «Учесть без смены статуса» только записывает письмо
+ * в заметки заявки, «Не про заявку» убирает письмо. Заявка предвыбрана,
  * только если подошла ровно одна. При нескольких кандидатах выбор за пользователем.
  */
 export function SuggestionRow({ message, candidateIds, applications }: Props) {
@@ -50,9 +52,7 @@ export function SuggestionRow({ message, candidateIds, applications }: Props) {
     ? `${GMAIL_TEXTS.suggestedPrefix}: ${STATUS_LABELS[message.suggestedStatus]}`
     : GMAIL_TEXTS.suggestedUnknown;
 
-  const sender = message.fromName
-    ? `${message.fromName} <${message.fromAddress}>`
-    : message.fromAddress;
+  const sender = formatSender(message);
 
   const run = (call: () => Promise<{ ok: true } | { ok: false; message: string }>) => {
     setError(null);
@@ -134,6 +134,14 @@ export function SuggestionRow({ message, candidateIds, applications }: Props) {
             className="rounded-md bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {pending ? GMAIL_TEXTS.applying : GMAIL_TEXTS.apply}
+          </button>
+          <button
+            type="button"
+            disabled={pending || !applicationId}
+            onClick={() => run(() => noteSuggestion(message.id, Number(applicationId)))}
+            className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {GMAIL_TEXTS.note}
           </button>
           <button
             type="button"

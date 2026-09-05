@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dates";
 import { pluralize } from "@/lib/plural";
 
 import type { GmailErrorKind } from "./types";
@@ -56,14 +57,40 @@ export const GMAIL_TEXTS = {
   suggestedPrefix: "Похоже на",
   apply: "Применить",
   applying: "Применяем…",
+  note: "Учесть без смены статуса",
   notRelated: "Не про заявку",
   dismissing: "Убираем…",
   applyError: "Не удалось применить. Обновите страницу и попробуйте снова.",
+  noteError: "Не удалось учесть письмо. Обновите страницу и попробуйте снова.",
+  noteTooLong:
+    "В заметках заявки не осталось места для новой строки. Сократите их и повторите.",
   dismissError: "Не удалось убрать письмо. Обновите страницу и попробуйте снова.",
   from: "От",
+  /** Начало строки, которая дописывается в заметки заявки при «Учесть без смены статуса». */
+  noteFrom: "Письмо от",
   noSubject: "(без темы)",
   openApplication: "открыть выбранную заявку",
 } as const;
+
+type SenderFields = { fromAddress: string; fromName: string | null };
+
+/** Отправитель как в почтовом клиенте: `Имя <адрес>` или просто адрес. */
+export function formatSender(message: SenderFields): string {
+  return message.fromName
+    ? `${message.fromName} <${message.fromAddress}>`
+    : message.fromAddress;
+}
+
+/**
+ * Строка для заметок заявки при «Учесть без смены статуса»: дата и время письма,
+ * отправитель, тема. Так история переписки копится в самой заявке.
+ */
+export function formatNoteLine(
+  message: SenderFields & { receivedAt: Date; subject: string },
+): string {
+  const subject = message.subject || GMAIL_TEXTS.noSubject;
+  return `${formatDateTime(message.receivedAt)} · ${GMAIL_TEXTS.noteFrom} ${formatSender(message)}: ${subject}`;
+}
 
 /** Подпись для случая нескольких подходящих заявок. Число подставляется в интерфейсе. */
 export function multipleCandidatesText(count: number): string {

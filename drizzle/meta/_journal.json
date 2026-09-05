@@ -29,6 +29,13 @@
       "when": 1788613181588,
       "tag": "0003_add-gmail",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1788615953734,
+      "tag": "0004_add-gmail-noted-state",
+      "breakpoints": true
     }
   ]
 }

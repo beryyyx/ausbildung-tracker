@@ -12,6 +12,9 @@ import {
   type FormState,
 } from "@/lib/form-schema";
 
+/** Предел поля заметок. Тот же лимит соблюдает дописывание строк из модуля Gmail. */
+export const NOTES_MAX_LENGTH = 5000;
+
 export const applicationInputSchema = z.object({
   company: requiredText("Укажите компанию", 200),
   position: requiredText("Укажите профессию", 200),
@@ -23,7 +26,7 @@ export const applicationInputSchema = z.object({
   appliedAt: optionalDate,
   status: z.enum(APPLICATION_STATUSES, { error: "Неизвестный статус" }),
   deadline: optionalDate,
-  notes: optionalText(5000),
+  notes: optionalText(NOTES_MAX_LENGTH),
   /** Время в пути в минутах. Пустое поле — null, не ноль. */
   commuteMinutes: optionalInt(0, 600),
 });

@@ -13,10 +13,16 @@ import {
 } from "@/db/schema";
 import { todayIso } from "@/lib/dates";
 
-import { parseApplicationForm, type ApplicationFormState } from "./validation";
+import {
+  NOTES_MAX_LENGTH,
+  parseApplicationForm,
+  type ApplicationFormState,
+} from "./validation";
 
 const idSchema = z.number().int().positive();
 const statusSchema = z.enum(APPLICATION_STATUSES);
+/** Одна строка для заметок: не пустая и заведомо короче всего поля. */
+const noteLineSchema = z.string().trim().min(1).max(500);
 
 export async function createApplication(
   _previous: ApplicationFormState,
@@ -99,4 +105,42 @@ export async function setApplicationStatus(
 
   revalidatePath("/");
   revalidatePath(`/applications/${id}`);
+}
+
+export type AppendNoteResult =
+  | { ok: true }
+  | { ok: false; reason: "invalid" | "not-found" | "too-long" };
+
+/**
+ * Дописывает строку в конец заметок заявки. Так модуль Gmail складывает историю
+ * переписки туда, где её читают. Строка идёт с новой строки; если заметок ещё нет,
+ * становится первой. Длина ограничена тем же лимитом, что и в форме заявки,
+ * иначе форму потом нельзя было бы сохранить.
+ */
+export async function appendApplicationNote(
+  id: number,
+  line: string,
+): Promise<AppendNoteResult> {
+  const parsedLine = noteLineSchema.safeParse(line);
+  if (!idSchema.safeParse(id).success || !parsedLine.success) {
+    return { ok: false, reason: "invalid" };
+  }
+
+  const current = await db
+    .select({ notes: applications.notes })
+    .from(applications)
+    .where(eq(applications.id, id))
+    .get();
+  if (!current) return { ok: false, reason: "not-found" };
+
+  const notes = current.notes
+    ? `${current.notes}\n${parsedLine.data}`
+    : parsedLine.data;
+  if (notes.length > NOTES_MAX_LENGTH) return { ok: false, reason: "too-long" };
+
+  await db.update(applications).set({ notes }).where(eq(applications.id, id));
+
+  revalidatePath("/");
+  revalidatePath(`/applications/${id}`);
+  return { ok: true };
 }
