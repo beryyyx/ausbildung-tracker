@@ -11,7 +11,11 @@
    дата отправки, статус, дедлайн, заметки. Готово: схема, список, создание,
    редактирование, удаление, быстрая смена статуса из списка.
    Дальше: фильтры по статусу, поиск, напоминания о дедлайнах.
-2. **Berichtsheft** — еженедельные отчёты во время обучения. Запланирован, не начат.
+2. **Профиль (`profile`)** — данные ученика для будущей генерации Anschreiben: личные данные,
+   школа, оценки за два последних Zeugnis, языки, Praktika, PDF со свидетельствами.
+   Готово: схема, страница `/profile`, сохранение, добавление и удаление строк, загрузка файлов.
+   Дальше: генерация Anschreiben, вторая шкала оценок (баллы 0–15), см. раздел «Профиль».
+3. **Berichtsheft** — еженедельные отчёты во время обучения. Запланирован, не начат.
    Получит свой файл схемы `src/db/schema/berichtsheft.ts` и свою папку в `src/features/`.
 
 ## Цель и критерии поиска
@@ -86,7 +90,10 @@ src/app/                       маршруты App Router: только сбо�
   applications/new/page.tsx    создание
   applications/[id]/page.tsx   редактирование и удаление
   suche/page.tsx               поиск вакансий во внешнем источнике и импорт в заявки
+  profile/page.tsx             профиль: форма, оценки, языки, Praktika, файлы
+  profile/files/[id]/route.ts  отдаёт загруженный PDF по id записи (путь берётся из БД)
   not-found.tsx                русская 404
+src/components/form/           общие части форм: Field (подпись + поле + ошибка), inputClass, FormMessage
 src/db/index.ts                клиент Drizzle, единственная точка доступа к БД
 src/db/schema/                 схема: по файлу на модуль, реэкспорт через index.ts
 src/features/<module>/         вся логика модуля, страницы только импортируют отсюда
@@ -103,11 +110,16 @@ src/features/jobsearch/        поиск вакансий во внешних �
   search.ts                    запуск поиска, перехват ошибок, пометка уже импортированных
   specialization.ts            распознавание AE/SI/DV/DPA по тексту вакансии
   actions.ts                   импорт вакансии в черновик заявки, защита от дублей по refnr
-src/lib/                       общие хелперы: dates.ts (форматы дат), plural.ts (склонение)
+src/features/profile/          профиль, см. раздел ниже
+  storage.ts                   файлы на диске: запись под случайным именем, чтение, удаление, проверка %PDF-
+  components/                  форма профиля, блоки Zeugnis/языков/Praktika/файлов, формы добавления
+src/lib/                       общие хелперы: dates.ts (форматы дат), plural.ts (склонение),
+                               form-schema.ts (кирпичики Zod-схем, FormState, parseForm), file-size.ts
 drizzle/                       сгенерированные SQL-миграции и meta/ — не редактировать руками
 data/app.db                    файл базы, в .gitignore
+uploads/                       загруженные PDF, в .gitignore; путь задаётся UPLOADS_DIR
 drizzle.config.ts              конфиг drizzle-kit
-.env                           DB_FILE_NAME=data/app.db (шаблон в .env.example)
+.env                           DB_FILE_NAME=data/app.db, UPLOADS_DIR=uploads (шаблон в .env.example)
 .claude/launch.json            запуск dev-сервера для предпросмотра в Claude Code
 ```
 
@@ -145,6 +157,26 @@ drizzle.config.ts              конфиг drizzle-kit
 - `commute_minutes` — время в пути в одну сторону. Пока вводится вручную, позже расчёт через
   транспортный API. Это главный фильтр вместо радиуса, см. критерии поиска.
 
+## Профиль
+
+- Профиль один: в таблице `profile` единственная строка с `id = 1` (CHECK), константа `PROFILE_ID`.
+  Пока форму ни разу не сохраняли, строки нет; `saveProfile` создаёт её при первой отправке.
+  Списки (`profile_zeugnisse`, `profile_grades`, `profile_languages`, `profile_internships`,
+  `profile_files`) без внешнего ключа на профиль.
+- Zeugnis — два фиксированных слота `latest` и `previous` (`ZEUGNIS_SLOTS`), по строке на слот,
+  строка создаётся при первом обращении (`ensureZeugnis`). У Zeugnis есть `scale`: сейчас только
+  `sek1` (оценки 1–6). Со второго полугодия EF или с Q1 появятся баллы 0–15: добавить значение
+  в `ZEUGNIS_SCALES` и диапазон в `GRADE_RANGES` (`validation.ts`), данные переносить не нужно.
+  CHECK на оценку в БД уже допускает 0–15, точный диапазон проверяет Zod по шкале.
+- Оценки, языки, Praktika: только добавление и удаление строк, редактирования нет.
+- Файлы: только PDF, до 10 МБ (`MAX_UPLOAD_BYTES`). Проверяется сигнатура `%PDF-`, не только
+  расширение. Файл сохраняется под случайным именем в `uploads/`, в БД исходное имя и `stored_name`.
+  Отдаётся через `/profile/files/[id]`, путь в адрес не попадает. Удаление стирает запись и файл.
+- Лимит тела Server Action поднят до 12 МБ в `next.config.ts` (`serverActions.bodySizeLimit`),
+  иначе загрузка больше 1 МБ падает. При изменении лимита файла менять и его.
+- Обращения к файловой системе с `process.cwd()` помечены `/*turbopackIgnore: true*/`, как в
+  `src/db/index.ts`: без пометки `next build` тащит в бандл весь проект.
+
 ## Источники вакансий
 
 - Контракт `JobSource` в `src/features/jobsearch/types.ts`. Новый источник: файл в `sources/`,
@@ -180,8 +212,11 @@ drizzle.config.ts              конфиг drizzle-kit
 - Мутации через Server Actions в `actions.ts` с `"use server"`. Вход всегда проверять Zod-схемой
   из `validation.ts`, даже если поля пришли из своего же UI. Чтение из БД — в `queries.ts`.
 - Формы: клиентский компонент с `useActionState`, action приходит пропсом. Действие возвращает
-  `{ errors, message, values }`: ошибки по полям, общая ошибка и введённые значения, чтобы форма
-  не очищалась. Для обновления id привязывается через `action.bind(null, id)` на сервере.
+  `FormState` из `src/lib/form-schema.ts`: `{ errors, message, values, saved }` — ошибки по полям,
+  общая ошибка, введённые значения, чтобы форма не очищалась, и флаг «сохранено» для форм,
+  которые остаются на странице. Разбор FormData — `parseForm(schema, formData)` оттуда же.
+  Для обновления id привязывается через `action.bind(null, id)` на сервере. Подпись, поле и
+  ошибка — общий `Field` из `src/components/form/field.tsx`.
 - Страницы, читающие БД, объявляют `export const dynamic = "force-dynamic"`: без этого Next
   запечёт их при сборке со старыми данными.
 - Клиентские компоненты не импортируют `@/db` и `queries.ts`. Из схемы им можно брать только типы

@@ -46,3 +46,6 @@ next-env.d.ts
 
 # keep the env template in git
 !.env.example
+
+# uploaded PDFs (local data, see src/features/profile/storage.ts)
+/uploads/

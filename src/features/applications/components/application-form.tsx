@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, type ReactNode } from "react";
+import { useActionState } from "react";
+
+import { Field, inputClass } from "@/components/form/field";
 
 import { FIELD_LABELS, STATUS_LABELS } from "../labels";
 import type {
@@ -31,9 +33,6 @@ const EMPTY_VALUES: ApplicationFormValues = {
   notes: "",
   commuteMinutes: "",
 };
-
-const inputClass =
-  "mt-1 block w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm shadow-sm outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 aria-invalid:border-red-400";
 
 export function ApplicationForm({ action, initialValues, submitLabel }: Props) {
   const [state, formAction, pending] = useActionState<
@@ -230,33 +229,3 @@ export function ApplicationForm({ action, initialValues, submitLabel }: Props) {
   );
 }
 
-function Field({
-  name,
-  label,
-  error,
-  required,
-  className,
-  children,
-}: {
-  name: ApplicationField;
-  label: string;
-  error?: string;
-  required?: boolean;
-  className?: string;
-  children: ReactNode;
-}) {
-  return (
-    <div className={className}>
-      <label htmlFor={name} className="block text-sm font-medium text-zinc-700">
-        {label}
-        {required && <span className="text-red-500"> *</span>}
-      </label>
-      {children}
-      {error && (
-        <p className="mt-1 text-sm text-red-600" role="alert">
-          {error}
-        </p>
-      )}
-    </div>
-  );
-}
