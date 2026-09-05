@@ -7,8 +7,10 @@
 
 ## Модули
 
-1. **Заявки (`applications`)** — компания, должность, город, ссылка на объявление,
-   дата отправки, статус, дедлайн, заметки. В работе: схема готова, UI ещё нет.
+1. **Заявки (`applications`)** — компания, профессия, город, ссылка на объявление,
+   дата отправки, статус, дедлайн, заметки. Готово: схема, список, создание,
+   редактирование, удаление, быстрая смена статуса из списка.
+   Дальше: фильтры по статусу, поиск, напоминания о дедлайнах.
 2. **Berichtsheft** — еженедельные отчёты во время обучения. Запланирован, не начат.
    Получит свой файл схемы `src/db/schema/berichtsheft.ts` и свою папку в `src/features/`.
 
@@ -25,7 +27,7 @@
 ```bash
 npm run dev          # запуск в режиме разработки, http://localhost:3000
 npm run build        # production-сборка
-npm run typecheck    # tsc --noEmit
+npm run typecheck    # next typegen (типы маршрутов PageProps/LayoutProps) + tsc --noEmit
 npm run lint         # eslint
 npm run db:generate  # сгенерировать миграцию из изменений схемы
 npm run db:migrate   # применить миграции вручную (обычно не нужно, см. ниже)
@@ -37,15 +39,26 @@ npm run db:studio    # Drizzle Studio: просмотр базы в браузе
 ## Структура папок
 
 ```
-src/app/                 маршруты App Router (layout.tsx, page.tsx, ...)
-src/db/index.ts          клиент Drizzle, единственная точка доступа к БД
-src/db/schema/           схема: по файлу на модуль, реэкспорт через index.ts
-src/features/<module>/   (планируется) логика модуля: queries.ts, actions.ts, components/
-src/lib/                 общие хелперы без привязки к модулю
-drizzle/                 сгенерированные SQL-миграции и meta/ — не редактировать руками
-data/app.db              файл базы, в .gitignore
-drizzle.config.ts        конфиг drizzle-kit
-.env                     DB_FILE_NAME=data/app.db (шаблон в .env.example)
+src/app/                       маршруты App Router: только сборка страниц из компонентов модулей
+  layout.tsx                   шапка с навигацией, шрифт Inter (latin + cyrillic), lang="ru"
+  page.tsx                     список заявок
+  applications/new/page.tsx    создание
+  applications/[id]/page.tsx   редактирование и удаление
+  not-found.tsx                русская 404
+src/db/index.ts                клиент Drizzle, единственная точка доступа к БД
+src/db/schema/                 схема: по файлу на модуль, реэкспорт через index.ts
+src/features/<module>/         вся логика модуля, страницы только импортируют отсюда
+  queries.ts                   чтение из БД (server-only)
+  actions.ts                   Server Actions: создать, изменить, удалить, сменить статус
+  validation.ts                Zod-схема ввода, тип состояния формы, разбор FormData
+  labels.ts                    русские подписи статусов и полей, цвета статусов
+  components/                  таблица, форма, метка статуса, кнопки
+src/lib/                       общие хелперы: dates.ts (форматы дат), plural.ts (склонение)
+drizzle/                       сгенерированные SQL-миграции и meta/ — не редактировать руками
+data/app.db                    файл базы, в .gitignore
+drizzle.config.ts              конфиг drizzle-kit
+.env                           DB_FILE_NAME=data/app.db (шаблон в .env.example)
+.claude/launch.json            запуск dev-сервера для предпросмотра в Claude Code
 ```
 
 ## База данных
@@ -81,8 +94,22 @@ drizzle.config.ts        конфиг drizzle-kit
 - Даты в интерфейсе показывать как `DD.MM.YYYY`, в БД хранить только ISO.
 - Именованные экспорты. `export default` только там, где требует Next (`page.tsx`, `layout.tsx`, конфиги).
 - Server Components по умолчанию. `"use client"` только для интерактивности и по минимуму.
-- Мутации через Server Actions в `actions.ts` с `"use server"`. Вход валидировать через Zod
-  (добавить пакет при первой форме). Чтение из БД — в `queries.ts` того же модуля.
-- Страницы, читающие БД, не должны запекаться при сборке: данные меняются между запросами.
+- Мутации через Server Actions в `actions.ts` с `"use server"`. Вход всегда проверять Zod-схемой
+  из `validation.ts`, даже если поля пришли из своего же UI. Чтение из БД — в `queries.ts`.
+- Формы: клиентский компонент с `useActionState`, action приходит пропсом. Действие возвращает
+  `{ errors, message, values }`: ошибки по полям, общая ошибка и введённые значения, чтобы форма
+  не очищалась. Для обновления id привязывается через `action.bind(null, id)` на сервере.
+- Страницы, читающие БД, объявляют `export const dynamic = "force-dynamic"`: без этого Next
+  запечёт их при сборке со старыми данными.
+- Клиентские компоненты не импортируют `@/db` и `queries.ts`. Из схемы им можно брать только типы
+  (`import type`), константы для UI берутся из `labels.ts`.
 - Форматирование как в шаблоне Next: 2 пробела, двойные кавычки, точки с запятой, запятая в конце.
 - Не коммитить `.env`, `data/*.db`, `.next/`.
+
+## Окружение разработки
+
+- Node.js стоит в `C:\Program Files\nodejs`. Оболочки и инструменты, запущенные до его установки,
+  могут не видеть `node` в PATH: тогда добавить этот путь вручную. По этой же причине
+  `.claude/launch.json` запускает Next через полный путь к `node.exe`, а не через `npm`.
+- Ручная проверка в браузере: http://localhost:3000 после `npm run dev`. Тестовые записи
+  удалять, база `data/app.db` содержит только реальные данные пользователя.

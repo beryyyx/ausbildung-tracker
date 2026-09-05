@@ -13,7 +13,7 @@ const DB_FILE = process.env.DB_FILE_NAME ?? "data/app.db";
 const MIGRATIONS_FOLDER = path.resolve(process.cwd(), "drizzle");
 
 function createDb() {
-  const file = path.resolve(process.cwd(), DB_FILE);
+  const file = path.resolve(/*turbopackIgnore: true*/ process.cwd(), DB_FILE);
   fs.mkdirSync(path.dirname(file), { recursive: true });
 
   const sqlite = new Database(file);
