@@ -1,4 +1,4 @@
-import { formatDateTime } from "@/lib/dates";
+import { formatDatedNoteLine } from "@/features/applications/notes";
 import { pluralize } from "@/lib/plural";
 
 import type { GmailErrorKind } from "./types";
@@ -82,14 +82,18 @@ export function formatSender(message: SenderFields): string {
 }
 
 /**
- * Строка для заметок заявки при «Учесть без смены статуса»: дата и время письма,
- * отправитель, тема. Так история переписки копится в самой заявке.
+ * Строка для заметок заявки при «Учесть без смены статуса»: датированная строка
+ * (формат задаёт модуль заявок) с отправителем и темой. Так история переписки
+ * копится в самой заявке в хронологическом порядке.
  */
 export function formatNoteLine(
   message: SenderFields & { receivedAt: Date; subject: string },
 ): string {
   const subject = message.subject || GMAIL_TEXTS.noSubject;
-  return `${formatDateTime(message.receivedAt)} · ${GMAIL_TEXTS.noteFrom} ${formatSender(message)}: ${subject}`;
+  return formatDatedNoteLine(
+    message.receivedAt,
+    `${GMAIL_TEXTS.noteFrom} ${formatSender(message)}: ${subject}`,
+  );
 }
 
 /** Подпись для случая нескольких подходящих заявок. Число подставляется в интерфейсе. */

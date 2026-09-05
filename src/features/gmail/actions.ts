@@ -7,7 +7,7 @@ import { z } from "zod";
 import { db } from "@/db";
 import { APPLICATION_STATUSES, gmailMessages } from "@/db/schema";
 import {
-  appendApplicationNote,
+  insertApplicationNote,
   setApplicationStatus,
 } from "@/features/applications/actions";
 import { getApplication } from "@/features/applications/queries";
@@ -102,7 +102,7 @@ export async function noteSuggestion(
   if (!message) return { ok: false, message: GMAIL_TEXTS.noteError };
 
   // Существование заявки и лимит длины заметок проверяет модуль заявок.
-  const appended = await appendApplicationNote(applicationId, formatNoteLine(message));
+  const appended = await insertApplicationNote(applicationId, formatNoteLine(message));
   if (!appended.ok) {
     return {
       ok: false,

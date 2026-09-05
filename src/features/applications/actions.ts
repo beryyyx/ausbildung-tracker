@@ -13,6 +13,7 @@ import {
 } from "@/db/schema";
 import { todayIso } from "@/lib/dates";
 
+import { insertDatedNote } from "./notes";
 import {
   NOTES_MAX_LENGTH,
   parseApplicationForm,
@@ -107,20 +108,20 @@ export async function setApplicationStatus(
   revalidatePath(`/applications/${id}`);
 }
 
-export type AppendNoteResult =
+export type InsertNoteResult =
   | { ok: true }
   | { ok: false; reason: "invalid" | "not-found" | "too-long" };
 
 /**
- * Дописывает строку в конец заметок заявки. Так модуль Gmail складывает историю
- * переписки туда, где её читают. Строка идёт с новой строки; если заметок ещё нет,
- * становится первой. Длина ограничена тем же лимитом, что и в форме заявки,
- * иначе форму потом нельзя было бы сохранить.
+ * Вставляет датированную строку в заметки заявки по её дате (правило в notes.ts).
+ * Так модуль Gmail складывает историю переписки туда, где её читают, и в хронологическом
+ * порядке независимо от порядка нажатий. Длина ограничена тем же лимитом, что и в форме
+ * заявки, иначе форму потом нельзя было бы сохранить.
  */
-export async function appendApplicationNote(
+export async function insertApplicationNote(
   id: number,
   line: string,
-): Promise<AppendNoteResult> {
+): Promise<InsertNoteResult> {
   const parsedLine = noteLineSchema.safeParse(line);
   if (!idSchema.safeParse(id).success || !parsedLine.success) {
     return { ok: false, reason: "invalid" };
@@ -133,9 +134,7 @@ export async function appendApplicationNote(
     .get();
   if (!current) return { ok: false, reason: "not-found" };
 
-  const notes = current.notes
-    ? `${current.notes}\n${parsedLine.data}`
-    : parsedLine.data;
+  const notes = insertDatedNote(current.notes, parsedLine.data);
   if (notes.length > NOTES_MAX_LENGTH) return { ok: false, reason: "too-long" };
 
   await db.update(applications).set({ notes }).where(eq(applications.id, id));
