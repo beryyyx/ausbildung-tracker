@@ -36,6 +36,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <Link href="/profile" className="text-zinc-600 hover:text-zinc-900">
                 Профиль
               </Link>
+              <Link href="/gmail" className="text-zinc-600 hover:text-zinc-900">
+                Gmail
+              </Link>
               <Link
                 href="/applications/new"
                 className="rounded-md bg-zinc-900 px-3 py-1.5 font-medium text-white hover:bg-zinc-700"

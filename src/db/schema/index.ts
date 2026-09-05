@@ -2,4 +2,5 @@
 // и регистрируется здесь. drizzle.config.ts смотрит только на этот файл.
 export * from "./applications";
 export * from "./profile";
+export * from "./gmail";
 // Позже: export * from "./berichtsheft";
