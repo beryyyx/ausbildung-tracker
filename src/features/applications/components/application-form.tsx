@@ -29,6 +29,7 @@ const EMPTY_VALUES: ApplicationFormValues = {
   status: "draft",
   deadline: "",
   notes: "",
+  commuteMinutes: "",
 };
 
 const inputClass =
@@ -172,6 +173,26 @@ export function ApplicationForm({ action, initialValues, submitLabel }: Props) {
             type="date"
             defaultValue={values.deadline}
             aria-invalid={Boolean(errorOf("deadline"))}
+            className={inputClass}
+          />
+        </Field>
+
+        <Field
+          name="commuteMinutes"
+          label={FIELD_LABELS.commuteMinutes}
+          error={errorOf("commuteMinutes")}
+        >
+          <input
+            id="commuteMinutes"
+            name="commuteMinutes"
+            type="number"
+            inputMode="numeric"
+            min={0}
+            max={600}
+            step={5}
+            placeholder="например, 45"
+            defaultValue={values.commuteMinutes}
+            aria-invalid={Boolean(errorOf("commuteMinutes"))}
             className={inputClass}
           />
         </Field>

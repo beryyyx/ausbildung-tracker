@@ -30,6 +30,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <Link href="/" className="text-zinc-600 hover:text-zinc-900">
                 Заявки
               </Link>
+              <Link href="/suche" className="text-zinc-600 hover:text-zinc-900">
+                Поиск
+              </Link>
               <Link
                 href="/applications/new"
                 className="rounded-md bg-zinc-900 px-3 py-1.5 font-medium text-white hover:bg-zinc-700"

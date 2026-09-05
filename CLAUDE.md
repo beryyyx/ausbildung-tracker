@@ -14,6 +14,47 @@
 2. **Berichtsheft** — еженедельные отчёты во время обучения. Запланирован, не начат.
    Получит свой файл схемы `src/db/schema/berichtsheft.ts` и свою папку в `src/features/`.
 
+## Цель и критерии поиска
+
+Дом: Straelen, 47638. Старт Ausbildung — август 2027 (ухожу из школы после EF).
+
+Целевые профессии, в порядке приоритета:
+1. Fachinformatiker Anwendungsentwicklung (основная)
+2. Fachinformatiker Systemintegration (запасная)
+
+Направление — юго-восток, в сторону Düsseldorf.
+
+Ограничения:
+- Дорога в одну сторону максимум ~1 час на общественном транспорте
+- Радиус в км — плохой фильтр, важно время в пути. У Straelen нет своей ж/д,
+  всё идёт через Geldern. Nettetal близко географически, но прямого сообщения нет.
+  Krefeld дальше по километрам, но ближе по времени
+- Поэтому радиус поиска держим широким (50 км), отсев делаем по профессии и времени в пути
+
+Приоритеты:
+1. Bofrost, Straelen — главная цель
+2. Компании с прикреплённой Berufsschule
+3. Сильная компания без школы — тоже рассматриваю
+
+SI в близкой фирме предпочтительнее AE в часе езды.
+
+### Bofrost (главная цель)
+- Все профессии кроме Verkäufer обучаются в центральном офисе в Straelen — ездить не нужно
+- Обучают Fachinformatiker AE и Systemintegration
+- Для абитуриентов есть дуальное обучение с Hochschule Niederrhein в Mönchengladbach:
+  Ausbildung + бакалавр информатики
+- Berufsschule части профессий в Duisburg
+- Заявки принимают с октября 2026, вакансия появится только на karriere.bofrost.de,
+  в Arbeitsagentur её не будет
+
+## Чего пока не делать
+
+- Дизайном и оформлением не заниматься, пока не скажу отдельно
+- Не добавлять аутентификацию, мультипользовательность, тесты и CI без запроса
+- Не начинать модуль Berichtsheft
+- Не расширять список источников вакансий: архитектура на несколько источников,
+  реализация пока одна
+
 ## Стек
 
 - Next.js 16 (App Router), React 19, TypeScript в режиме `strict`
@@ -44,6 +85,7 @@ src/app/                       маршруты App Router: только сбо�
   page.tsx                     список заявок
   applications/new/page.tsx    создание
   applications/[id]/page.tsx   редактирование и удаление
+  suche/page.tsx               поиск вакансий во внешнем источнике и импорт в заявки
   not-found.tsx                русская 404
 src/db/index.ts                клиент Drizzle, единственная точка доступа к БД
 src/db/schema/                 схема: по файлу на модуль, реэкспорт через index.ts
@@ -53,6 +95,14 @@ src/features/<module>/         вся логика модуля, страниц�
   validation.ts                Zod-схема ввода, тип состояния формы, разбор FormData
   labels.ts                    русские подписи статусов и полей, цвета статусов
   components/                  таблица, форма, метка статуса, кнопки
+src/features/jobsearch/        поиск вакансий во внешних источниках, см. раздел ниже
+  types.ts                     контракт JobSource и единый формат вакансии JobListing
+  sources/<id>.ts              реализация источника, сейчас только arbeitsagentur.ts
+  sources/index.ts             реестр источников, ключи = APPLICATION_SOURCES из схемы
+  search-params.ts             разбор параметров /suche, значения по умолчанию, ссылки пагинации
+  search.ts                    запуск поиска, перехват ошибок, пометка уже импортированных
+  specialization.ts            распознавание AE/SI/DV/DPA по тексту вакансии
+  actions.ts                   импорт вакансии в черновик заявки, защита от дублей по refnr
 src/lib/                       общие хелперы: dates.ts (форматы дат), plural.ts (склонение)
 drizzle/                       сгенерированные SQL-миграции и meta/ — не редактировать руками
 data/app.db                    файл базы, в .gitignore
@@ -86,6 +136,32 @@ drizzle.config.ts              конфиг drizzle-kit
 
 `draft` черновик → `sent` отправлено → `invitation` приглашение → `offer` оффер / `rejected` отказ.
 Ключи хранятся в БД на английском, русские подписи задаются в UI-слое.
+
+### Поля импорта
+
+- `source` — ключ источника из `APPLICATION_SOURCES`, без CHECK (список будет расти).
+  `refnr` — номер вакансии в источнике, UNIQUE: одну вакансию нельзя импортировать дважды.
+  У заявок, созданных вручную, оба поля null.
+- `commute_minutes` — время в пути в одну сторону. Пока вводится вручную, позже расчёт через
+  транспортный API. Это главный фильтр вместо радиуса, см. критерии поиска.
+
+## Источники вакансий
+
+- Контракт `JobSource` в `src/features/jobsearch/types.ts`. Новый источник: файл в `sources/`,
+  строка в реестре `sources/index.ts`, значение в `APPLICATION_SOURCES` в схеме. Страница `/suche`
+  и импорт от источника не зависят. Сейчас реализован только Arbeitsagentur, другие не добавлять
+  без запроса.
+- Arbeitsagentur: `GET https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v6/jobs`,
+  заголовок `X-API-Key: jobboerse-jobsuche` (публичный). Пути `v4`/`v5` из старой документации
+  отдают 403 «No match found for request». Параметры: `was`, `wo`, `umkreis`, `angebotsart=4`
+  (Ausbildung), `page` с 1 (ноль даёт 400), `size`.
+- Формат ответа v6 снят с живой выдачи 2026-09-05 и описан Zod-схемой в `sources/arbeitsagentur.ts`.
+  Особенности: при пустой выдаче поля `ergebnisliste` нет совсем; `externeURL` есть лишь у ~10%
+  вакансий, остальным ссылка строится как `https://www.arbeitsagentur.de/jobsuche/jobdetail/<refnr>`;
+  `firma`, `stellenangebotsTitel`, `hauptberuf` могут отсутствовать.
+- Поиск идёт на сервере при рендере `/suche`, параметры в адресе (обычная GET-форма). Значения по
+  умолчанию: `Fachinformatiker`, `Straelen`, 50 км. Ошибки источника не роняют страницу: `search.ts`
+  возвращает `{ ok: false, kind }`, текст подбирается в `labels.ts`.
 
 ## Соглашения по коду
 

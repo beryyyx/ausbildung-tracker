@@ -1,4 +1,4 @@
-import type { ApplicationStatus } from "@/db/schema";
+import type { ApplicationSource, ApplicationStatus } from "@/db/schema";
 
 /** Русские подписи статусов. Типизация не даст забыть новый статус. */
 export const STATUS_LABELS: Record<ApplicationStatus, string> = {
@@ -27,4 +27,10 @@ export const FIELD_LABELS = {
   status: "Статус",
   deadline: "Дедлайн подачи",
   notes: "Заметки",
+  commuteMinutes: "Время в пути, мин (в одну сторону)",
 } as const;
+
+/** Названия источников импорта для интерфейса. */
+export const SOURCE_LABELS: Record<ApplicationSource, string> = {
+  arbeitsagentur: "Arbeitsagentur",
+};

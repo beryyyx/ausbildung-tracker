@@ -5,6 +5,7 @@ import { updateApplication } from "@/features/applications/actions";
 import { ApplicationForm } from "@/features/applications/components/application-form";
 import { DeleteButton } from "@/features/applications/components/delete-button";
 import { StatusBadge } from "@/features/applications/components/status-badge";
+import { SOURCE_LABELS } from "@/features/applications/labels";
 import { getApplication } from "@/features/applications/queries";
 import { applicationToFormValues } from "@/features/applications/validation";
 import { formatDateTime } from "@/lib/dates";
@@ -37,6 +38,12 @@ export default async function ApplicationPage({
             {application.position}
             {application.city ? `, ${application.city}` : ""}
           </p>
+          {application.source && (
+            <p className="mt-1 text-xs text-zinc-400">
+              Импорт из {SOURCE_LABELS[application.source]}
+              {application.refnr ? `, номер ${application.refnr}` : ""}
+            </p>
+          )}
         </div>
         <DeleteButton id={application.id} />
       </div>

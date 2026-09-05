@@ -16,6 +16,15 @@ export const APPLICATION_STATUSES = [
 
 export type ApplicationStatus = (typeof APPLICATION_STATUSES)[number];
 
+/**
+ * Источники вакансий для импорта. Без CHECK в БД: список будет расти,
+ * а миграция ради каждого нового источника не нужна.
+ * Реализации живут в src/features/jobsearch/sources/.
+ */
+export const APPLICATION_SOURCES = ["arbeitsagentur"] as const;
+
+export type ApplicationSource = (typeof APPLICATION_SOURCES)[number];
+
 export const applications = sqliteTable(
   "applications",
   {
@@ -36,6 +45,16 @@ export const applications = sqliteTable(
     /** Дедлайн подачи. Календарная дата в формате YYYY-MM-DD. */
     deadline: text("deadline"),
     notes: text("notes"),
+    /** Время в пути в одну сторону, минуты. Пока проставляется вручную. */
+    commuteMinutes: integer("commute_minutes"),
+
+    /** Откуда импортирована заявка. null — создана вручную. */
+    source: text("source", { enum: APPLICATION_SOURCES }),
+    /**
+     * Номер вакансии в источнике (Arbeitsagentur: referenznummer).
+     * Уникален, чтобы одну вакансию нельзя было импортировать дважды.
+     */
+    refnr: text("refnr").unique("applications_refnr_unique"),
 
     /** Момент создания записи, unix timestamp. Ставится базой. */
     createdAt: integer("created_at", { mode: "timestamp" })

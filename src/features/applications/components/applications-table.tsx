@@ -14,6 +14,7 @@ export function ApplicationsTable({ items }: { items: Application[] }) {
             <th className="px-4 py-3">Компания</th>
             <th className="px-4 py-3">Профессия</th>
             <th className="px-4 py-3">Город</th>
+            <th className="px-4 py-3">В пути</th>
             <th className="px-4 py-3">Статус</th>
             <th className="px-4 py-3">Отправлено</th>
             <th className="px-4 py-3">Дедлайн</th>
@@ -45,6 +46,9 @@ export function ApplicationsTable({ items }: { items: Application[] }) {
               </td>
               <td className="px-4 py-3 text-zinc-700">{item.position}</td>
               <td className="px-4 py-3 text-zinc-600">{item.city || "—"}</td>
+              <td className="whitespace-nowrap px-4 py-3 text-zinc-600">
+                {item.commuteMinutes === null ? "—" : `${item.commuteMinutes} мин`}
+              </td>
               <td className="px-4 py-3">
                 <StatusSelect id={item.id} status={item.status} />
               </td>

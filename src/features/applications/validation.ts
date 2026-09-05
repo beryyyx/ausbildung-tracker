@@ -17,6 +17,21 @@ const optionalDate = z.preprocess(
   z.iso.date({ error: "Дата должна быть в формате ГГГГ-ММ-ДД" }).nullable(),
 );
 
+/** Целое число минут из текстового поля. Пустое поле — null, не ноль. */
+const optionalMinutes = z.preprocess(
+  (value) => {
+    if (typeof value !== "string") return value;
+    const trimmed = value.trim();
+    return trimmed === "" ? null : Number(trimmed);
+  },
+  z
+    .number({ error: "Введите число минут" })
+    .int({ error: "Только целое число" })
+    .min(0, "Не меньше 0")
+    .max(600, "Не больше 600")
+    .nullable(),
+);
+
 export const applicationInputSchema = z.object({
   company: z
     .string()
@@ -37,6 +52,7 @@ export const applicationInputSchema = z.object({
   status: z.enum(APPLICATION_STATUSES, { error: "Неизвестный статус" }),
   deadline: optionalDate,
   notes: optionalText(5000),
+  commuteMinutes: optionalMinutes,
 });
 
 /** Проверенные данные, готовые к записи в базу. */
@@ -102,5 +118,7 @@ export function applicationToFormValues(
     status: application.status,
     deadline: application.deadline ?? "",
     notes: application.notes ?? "",
+    commuteMinutes:
+      application.commuteMinutes === null ? "" : String(application.commuteMinutes),
   };
 }
