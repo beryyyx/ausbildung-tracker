@@ -14,10 +14,10 @@ export function ZeugnisSection({ data }: { data: ZeugnisWithGrades }) {
   const idPrefix = `zeugnis-${slot}`;
 
   return (
-    <section className="space-y-4 rounded-lg border border-zinc-200 bg-white p-6 shadow-sm">
+    <section className="space-y-4 rounded-lg border border-edge bg-surface p-card shadow-card">
       <div className="flex items-baseline justify-between gap-3">
         <h3 className="font-semibold">{ZEUGNIS_SLOT_LABELS[slot]}</h3>
-        <span className="text-xs text-zinc-500">{ZEUGNIS_SCALE_LABELS[scale]}</span>
+        <span className="text-xs text-fg-muted">{ZEUGNIS_SCALE_LABELS[scale]}</span>
       </div>
 
       <ZeugnisTitleForm
@@ -27,15 +27,15 @@ export function ZeugnisSection({ data }: { data: ZeugnisWithGrades }) {
       />
 
       {grades.length === 0 ? (
-        <p className="text-sm text-zinc-500">{PROFILE_TEXTS.emptyGrades}</p>
+        <p className="text-sm text-fg-muted">{PROFILE_TEXTS.emptyGrades}</p>
       ) : (
         <table className="w-full text-sm">
           <tbody>
             {grades.map((grade) => (
-              <tr key={grade.id} className="border-t border-zinc-100">
-                <td className="py-1.5">{grade.subject}</td>
-                <td className="w-16 py-1.5 text-right tabular-nums">{grade.grade}</td>
-                <td className="w-24 py-1.5 text-right">
+              <tr key={grade.id} className="border-t border-edge-muted">
+                <td className="py-row">{grade.subject}</td>
+                <td className="w-16 py-row text-right tabular-nums">{grade.grade}</td>
+                <td className="w-24 py-row text-right">
                   <RowDeleteButton
                     action={deleteGrade.bind(null, grade.id)}
                     ariaLabel={`${PROFILE_TEXTS.delete}: ${grade.subject}`}

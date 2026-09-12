@@ -20,10 +20,10 @@ export default async function SearchPage({ searchParams }: PageProps<"/suche">) 
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">{SEARCH_LABELS.title}</h1>
-        <p className="mt-1 text-sm text-zinc-500">{SEARCH_LABELS.subtitle}</p>
+        <p className="mt-1 text-sm text-fg-muted">{SEARCH_LABELS.subtitle}</p>
       </div>
 
-      <div className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
+      <div className="rounded-lg border border-edge bg-surface p-card shadow-card">
         <SearchForm query={query} />
       </div>
 
@@ -32,13 +32,13 @@ export default async function SearchPage({ searchParams }: PageProps<"/suche">) 
       ) : (
         <div
           role="alert"
-          className="rounded-lg border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-800"
+          className="rounded-lg border border-danger-edge bg-danger-soft px-5 py-4 text-sm text-danger"
         >
           <p className="font-medium">{SEARCH_LABELS.errorTitle}</p>
           <p className="mt-1">{SOURCE_ERROR_MESSAGES[outcome.kind]}</p>
           <Link
             href={buildSearchHref(query)}
-            className="mt-3 inline-block rounded-md border border-red-300 bg-white px-3 py-1.5 font-medium text-red-700 hover:bg-red-100"
+            className="mt-3 inline-block rounded-md border border-danger-edge bg-surface px-3 py-1.5 font-medium text-danger hover:bg-danger-soft"
           >
             {SEARCH_LABELS.retry}
           </Link>

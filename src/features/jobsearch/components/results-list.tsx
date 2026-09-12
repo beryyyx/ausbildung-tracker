@@ -44,7 +44,7 @@ export function ResultsList({
     <div className="space-y-4">
       <Summary result={result} query={query} />
 
-      <ul className="divide-y divide-zinc-100 rounded-lg border border-zinc-200 bg-white shadow-sm">
+      <ul className="divide-y divide-edge-muted rounded-lg border border-edge bg-surface shadow-card">
         {result.listings.map((listing) => (
           <li
             key={listing.refnr}
@@ -76,14 +76,14 @@ function Summary({ result, query }: { result: SearchPage; query: JobSearchQuery 
       : null,
   ].filter(Boolean);
 
-  return <p className="text-sm text-zinc-500">{parts.join(" · ")}</p>;
+  return <p className="text-sm text-fg-muted">{parts.join(" · ")}</p>;
 }
 
 function EmptyState({ title, hint }: { title: string; hint: string }) {
   return (
-    <div className="rounded-lg border border-dashed border-zinc-300 bg-white px-6 py-12 text-center">
-      <p className="text-lg font-medium text-zinc-900">{title}</p>
-      <p className="mt-1 text-sm text-zinc-500">{hint}</p>
+    <div className="rounded-lg border border-dashed border-edge bg-surface px-6 py-12 text-center">
+      <p className="text-lg font-medium text-fg">{title}</p>
+      <p className="mt-1 text-sm text-fg-muted">{hint}</p>
     </div>
   );
 }
@@ -96,7 +96,7 @@ function ListingCard({ listing }: { listing: JobListing }) {
     <div className="min-w-0 space-y-1.5">
       <div className="flex flex-wrap items-center gap-2">
         {listing.kind === "duales-studium" && (
-          <Badge className="border-violet-200 bg-violet-50 text-violet-700">
+          <Badge className="border-purple-edge bg-purple-soft text-purple">
             {JOB_KIND_LABELS[listing.kind]}
           </Badge>
         )}
@@ -106,7 +106,7 @@ function ListingCard({ listing }: { listing: JobListing }) {
           </Badge>
         ))}
         {listing.startDate === null && (
-          <Badge className="border-zinc-200 bg-zinc-100 text-zinc-500">
+          <Badge className="border-neutral-edge bg-neutral-soft text-neutral">
             {SEARCH_LABELS.undated}
           </Badge>
         )}
@@ -114,13 +114,13 @@ function ListingCard({ listing }: { listing: JobListing }) {
           href={listing.url}
           target="_blank"
           rel="noreferrer"
-          className="font-medium text-zinc-900 hover:underline"
+          className="font-medium text-fg hover:underline"
         >
           {listing.title}
         </a>
       </div>
 
-      <p className="text-sm text-zinc-700">
+      <p className="text-sm text-fg">
         {listing.company ?? "Компания не указана"}
         {place && <> · {place}</>}
         {listing.distanceKm !== null && (
@@ -131,7 +131,7 @@ function ListingCard({ listing }: { listing: JobListing }) {
         )}
       </p>
 
-      <p className="text-xs text-zinc-500">
+      <p className="text-xs text-fg-muted">
         {listing.profession && (
           <>
             {SEARCH_LABELS.profession}: {listing.profession}
@@ -173,11 +173,11 @@ function Pagination({
   if (totalPages <= 1) return null;
 
   const linkClass =
-    "rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm text-zinc-700 hover:bg-zinc-50";
+    "rounded-md border border-edge bg-surface px-3 py-1.5 text-sm text-fg hover:bg-surface-hover";
 
   return (
     <nav
-      className="flex items-center justify-between text-sm text-zinc-500"
+      className="flex items-center justify-between text-sm text-fg-muted"
       aria-label="Страницы"
     >
       {page > 1 ? (

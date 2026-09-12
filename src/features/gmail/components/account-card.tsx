@@ -28,11 +28,11 @@ function persistedSummary(account: GmailAccount): SyncSummary | null {
 /** Подключённый ящик: адрес, дата синхронизации, кнопки. При истёкшем подключении — предупреждение. */
 export function AccountCard({ account }: { account: GmailAccount }) {
   return (
-    <section className="space-y-4 rounded-lg border border-zinc-200 bg-white p-6 shadow-sm">
+    <section className="space-y-4 rounded-lg border border-edge bg-surface p-card shadow-card">
       <div>
-        <p className="text-sm text-zinc-500">{GMAIL_TEXTS.connectedAs}</p>
+        <p className="text-sm text-fg-muted">{GMAIL_TEXTS.connectedAs}</p>
         <p className="text-lg font-semibold">{account.email}</p>
-        <p className="mt-1 text-sm text-zinc-500">
+        <p className="mt-1 text-sm text-fg-muted">
           {GMAIL_TEXTS.lastSync}:{" "}
           {account.lastSyncedAt
             ? formatDateTime(account.lastSyncedAt)
@@ -43,13 +43,13 @@ export function AccountCard({ account }: { account: GmailAccount }) {
       {account.reconnectRequired && (
         <div
           role="alert"
-          className="space-y-2 rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800"
+          className="space-y-2 rounded-md border border-warning-edge bg-warning-soft px-4 py-row text-sm text-warning"
         >
           <p className="font-medium">{GMAIL_TEXTS.expiredTitle}</p>
           <p>{GMAIL_TEXTS.expiredHint}</p>
           <a
             href={CONNECT_PATH}
-            className="inline-block rounded-md bg-zinc-900 px-3 py-1.5 font-medium text-white hover:bg-zinc-700"
+            className="inline-block rounded-md bg-accent px-3 py-1.5 font-medium text-accent-on hover:bg-accent-hover"
           >
             {GMAIL_TEXTS.reconnect}
           </a>

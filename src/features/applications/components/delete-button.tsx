@@ -17,7 +17,7 @@ export function DeleteButton({ id }: { id: number }) {
         }
         startTransition(() => deleteApplication(id));
       }}
-      className="rounded-md border border-red-200 px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-50 disabled:cursor-wait disabled:opacity-60"
+      className="rounded-md border border-danger-edge px-3 py-1.5 text-sm font-medium text-danger hover:bg-danger-soft disabled:cursor-wait disabled:opacity-60"
     >
       {pending ? "Удаляем…" : "Удалить"}
     </button>

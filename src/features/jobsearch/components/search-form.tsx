@@ -1,9 +1,8 @@
+import { inputClass } from "@/components/form/field";
+
 import { SEARCH_LABELS } from "../labels";
 import { RADIUS_OPTIONS } from "../search-params";
 import type { JobSearchQuery } from "../types";
-
-const inputClass =
-  "mt-1 block w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm shadow-sm outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500";
 
 /**
  * Обычная GET-форма без JavaScript: параметры попадают в адрес страницы,
@@ -16,7 +15,7 @@ export function SearchForm({ query }: { query: JobSearchQuery }) {
       action="/suche"
       className="grid gap-4 sm:grid-cols-[2fr_2fr_1fr_1.3fr_auto] sm:items-end"
     >
-      <label className="block text-sm font-medium text-zinc-700">
+      <label className="block text-sm font-medium text-fg">
         {SEARCH_LABELS.what}
         <input
           name="was"
@@ -27,7 +26,7 @@ export function SearchForm({ query }: { query: JobSearchQuery }) {
         />
       </label>
 
-      <label className="block text-sm font-medium text-zinc-700">
+      <label className="block text-sm font-medium text-fg">
         {SEARCH_LABELS.where}
         <input
           name="wo"
@@ -38,7 +37,7 @@ export function SearchForm({ query }: { query: JobSearchQuery }) {
         />
       </label>
 
-      <label className="block text-sm font-medium text-zinc-700">
+      <label className="block text-sm font-medium text-fg">
         {SEARCH_LABELS.radius}
         <select name="umkreis" defaultValue={query.radiusKm} className={inputClass}>
           {RADIUS_OPTIONS.map((km) => (
@@ -49,7 +48,7 @@ export function SearchForm({ query }: { query: JobSearchQuery }) {
         </select>
       </label>
 
-      <label className="block text-sm font-medium text-zinc-700">
+      <label className="block text-sm font-medium text-fg">
         {SEARCH_LABELS.startFrom}
         <input
           name="start"
@@ -61,7 +60,7 @@ export function SearchForm({ query }: { query: JobSearchQuery }) {
 
       <button
         type="submit"
-        className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700"
+        className="rounded-md bg-accent px-4 py-control text-sm font-medium text-accent-on hover:bg-accent-hover"
       >
         {SEARCH_LABELS.submit}
       </button>

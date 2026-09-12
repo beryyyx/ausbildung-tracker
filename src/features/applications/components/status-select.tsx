@@ -33,7 +33,7 @@ export function StatusSelect({
           await setApplicationStatus(id, next);
         });
       }}
-      className={`cursor-pointer rounded-full border px-2.5 py-1 text-xs font-medium outline-none focus:ring-2 focus:ring-zinc-400 disabled:cursor-wait disabled:opacity-60 ${STATUS_STYLES[optimisticStatus]}`}
+      className={`cursor-pointer rounded-full border px-2.5 py-1 text-xs font-medium outline-none focus:ring-2 focus:ring-accent disabled:cursor-wait disabled:opacity-60 ${STATUS_STYLES[optimisticStatus]}`}
     >
       {Object.entries(STATUS_LABELS).map(([value, label]) => (
         <option key={value} value={value}>

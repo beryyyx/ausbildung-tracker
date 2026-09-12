@@ -65,19 +65,19 @@ export function SuggestionRow({ message, candidateIds, applications }: Props) {
   return (
     <li className="space-y-3 px-4 py-4">
       <div className="min-w-0">
-        <p className="text-xs text-zinc-500">
+        <p className="text-xs text-fg-muted">
           {formatDateTime(message.receivedAt)} · {GMAIL_TEXTS.from} {sender}
         </p>
-        <p className="font-medium text-zinc-900">
+        <p className="font-medium text-fg">
           {message.subject || GMAIL_TEXTS.noSubject}
         </p>
-        <p className="mt-1 text-xs text-zinc-500">
+        <p className="mt-1 text-xs text-fg-muted">
           {candidatesHint}. {statusHint}.
         </p>
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-        <label className="block flex-1 text-sm font-medium text-zinc-700">
+        <label className="block flex-1 text-sm font-medium text-fg">
           {GMAIL_TEXTS.application}
           <select
             value={applicationId}
@@ -107,7 +107,7 @@ export function SuggestionRow({ message, candidateIds, applications }: Props) {
           </select>
         </label>
 
-        <label className="block text-sm font-medium text-zinc-700 sm:w-48">
+        <label className="block text-sm font-medium text-fg sm:w-48">
           {GMAIL_TEXTS.status}
           <select
             value={status}
@@ -131,7 +131,7 @@ export function SuggestionRow({ message, candidateIds, applications }: Props) {
             onClick={() =>
               run(() => applySuggestion(message.id, Number(applicationId), status))
             }
-            className="rounded-md bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-md bg-accent px-3 py-control text-sm font-medium text-accent-on hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
           >
             {pending ? GMAIL_TEXTS.applying : GMAIL_TEXTS.apply}
           </button>
@@ -139,7 +139,7 @@ export function SuggestionRow({ message, candidateIds, applications }: Props) {
             type="button"
             disabled={pending || !applicationId}
             onClick={() => run(() => noteSuggestion(message.id, Number(applicationId)))}
-            className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-md border border-edge bg-surface px-3 py-control text-sm font-medium text-fg hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-60"
           >
             {GMAIL_TEXTS.note}
           </button>
@@ -147,7 +147,7 @@ export function SuggestionRow({ message, candidateIds, applications }: Props) {
             type="button"
             disabled={pending}
             onClick={() => run(() => dismissSuggestion(message.id))}
-            className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:cursor-wait disabled:opacity-60"
+            className="rounded-md border border-edge bg-surface px-3 py-control text-sm font-medium text-fg hover:bg-surface-hover disabled:cursor-wait disabled:opacity-60"
           >
             {GMAIL_TEXTS.notRelated}
           </button>
@@ -157,14 +157,14 @@ export function SuggestionRow({ message, candidateIds, applications }: Props) {
       {applicationId && (
         <Link
           href={`/applications/${applicationId}`}
-          className="text-xs text-zinc-500 underline-offset-2 hover:underline"
+          className="text-xs text-fg-muted underline-offset-2 hover:underline"
         >
           {GMAIL_TEXTS.openApplication}
         </Link>
       )}
 
       {error && (
-        <p className="text-sm text-red-600" role="alert">
+        <p className="text-sm text-danger" role="alert">
           {error}
         </p>
       )}

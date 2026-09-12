@@ -25,13 +25,13 @@ export function SuggestionsList({
       <h2 className="text-lg font-semibold">{GMAIL_TEXTS.suggestionsTitle}</h2>
 
       {suggestions.length === 0 ? (
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-fg-muted">
           {connected
             ? GMAIL_TEXTS.suggestionsEmpty
             : GMAIL_TEXTS.suggestionsEmptyNotConnected}
         </p>
       ) : (
-        <ul className="divide-y divide-zinc-100 rounded-lg border border-zinc-200 bg-white shadow-sm">
+        <ul className="divide-y divide-edge-muted rounded-lg border border-edge bg-surface shadow-card">
           {suggestions.map(({ message, candidateIds }) => (
             <SuggestionRow
               key={message.id}

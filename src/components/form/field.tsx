@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 /** Классы для input, select и textarea во всех формах приложения. */
 export const inputClass =
-  "mt-1 block w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm shadow-sm outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 aria-invalid:border-red-400";
+  "mt-1 block w-full rounded-md border border-edge bg-surface px-3 py-control text-sm text-fg shadow-card outline-none placeholder:text-fg-subtle focus:border-accent focus:ring-1 focus:ring-accent aria-invalid:border-danger";
 
 /**
  * Подпись, поле и ошибка под ним. `name` должен совпадать с id элемента
@@ -25,13 +25,13 @@ export function Field({
 }) {
   return (
     <div className={className}>
-      <label htmlFor={name} className="block text-sm font-medium text-zinc-700">
+      <label htmlFor={name} className="block text-sm font-medium text-fg">
         {label}
-        {required && <span className="text-red-500"> *</span>}
+        {required && <span className="text-danger"> *</span>}
       </label>
       {children}
       {error && (
-        <p className="mt-1 text-sm text-red-600" role="alert">
+        <p className="mt-1 text-sm text-danger" role="alert">
           {error}
         </p>
       )}

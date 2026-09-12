@@ -10,8 +10,8 @@ export function FormMessage({
 }) {
   const styles =
     kind === "error"
-      ? "border-red-200 bg-red-50 text-red-700"
-      : "border-emerald-200 bg-emerald-50 text-emerald-700";
+      ? "border-danger-edge bg-danger-soft text-danger"
+      : "border-success-edge bg-success-soft text-success";
 
   return (
     <p

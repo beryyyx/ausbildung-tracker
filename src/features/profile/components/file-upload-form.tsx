@@ -32,18 +32,18 @@ export function FileUploadForm({ action }: Props) {
             accept="application/pdf,.pdf"
             required
             aria-invalid={Boolean(error)}
-            className={`${inputClass} file:mr-3 file:rounded file:border-0 file:bg-zinc-100 file:px-2 file:py-1 file:text-sm`}
+            className={`${inputClass} file:mr-3 file:rounded file:border-0 file:bg-surface-muted file:px-2 file:py-1 file:text-sm`}
           />
         </Field>
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:cursor-wait disabled:opacity-60"
+          className="rounded-md bg-accent px-3 py-control text-sm font-medium text-accent-on hover:bg-accent-hover disabled:cursor-wait disabled:opacity-60"
         >
           {pending ? PROFILE_TEXTS.uploading : PROFILE_TEXTS.upload}
         </button>
       </div>
-      <p className="text-xs text-zinc-500">{PROFILE_TEXTS.filesHint}</p>
+      <p className="text-xs text-fg-muted">{PROFILE_TEXTS.filesHint}</p>
     </form>
   );
 }

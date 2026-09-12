@@ -29,7 +29,7 @@ export function RowDeleteButton({
         if (confirmText && !window.confirm(confirmText)) return;
         startTransition(() => action());
       }}
-      className="text-sm text-red-700 hover:underline disabled:cursor-wait disabled:opacity-60"
+      className="text-sm text-danger hover:underline disabled:cursor-wait disabled:opacity-60"
     >
       {pending ? PROFILE_TEXTS.deleting : PROFILE_TEXTS.delete}
     </button>

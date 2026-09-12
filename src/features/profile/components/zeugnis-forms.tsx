@@ -56,13 +56,13 @@ export function ZeugnisTitleForm({
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium hover:bg-zinc-50 disabled:cursor-wait disabled:opacity-60"
+          className="rounded-md border border-edge px-3 py-control text-sm font-medium hover:bg-surface-hover disabled:cursor-wait disabled:opacity-60"
         >
           {pending ? PROFILE_TEXTS.saving : PROFILE_TEXTS.save}
         </button>
       </div>
       {state.saved && !error && (
-        <p className="text-sm text-emerald-700" role="status">
+        <p className="text-sm text-success" role="status">
           {PROFILE_TEXTS.saved}
         </p>
       )}
@@ -135,7 +135,7 @@ export function GradeAddForm({ action, idPrefix, range }: GradeAddFormProps) {
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:cursor-wait disabled:opacity-60"
+          className="rounded-md bg-accent px-3 py-control text-sm font-medium text-accent-on hover:bg-accent-hover disabled:cursor-wait disabled:opacity-60"
         >
           {pending ? PROFILE_TEXTS.adding : PROFILE_TEXTS.add}
         </button>

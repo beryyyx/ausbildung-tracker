@@ -35,10 +35,10 @@ export default async function ProfilePage() {
         <h1 className="text-2xl font-semibold tracking-tight">
           {PROFILE_TEXTS.pageTitle}
         </h1>
-        <p className="mt-1 text-sm text-zinc-500">{PROFILE_TEXTS.pageHint}</p>
+        <p className="mt-1 text-sm text-fg-muted">{PROFILE_TEXTS.pageHint}</p>
       </div>
 
-      <div className="rounded-lg border border-zinc-200 bg-white p-6 shadow-sm">
+      <div className="rounded-lg border border-edge bg-surface p-card shadow-card">
         <ProfileForm
           action={saveProfile}
           initialValues={profile ? profileToFormValues(profile) : undefined}

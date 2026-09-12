@@ -54,10 +54,10 @@ export const SPECIALIZATION_LABELS: Record<Specialization, string> = {
 
 /** Цвета меток специализаций: основная и запасная цели выделены. */
 export const SPECIALIZATION_STYLES: Record<Specialization, string> = {
-  AE: "border-emerald-200 bg-emerald-50 text-emerald-700",
-  SI: "border-blue-200 bg-blue-50 text-blue-700",
-  DV: "border-zinc-200 bg-zinc-100 text-zinc-600",
-  DPA: "border-zinc-200 bg-zinc-100 text-zinc-600",
+  AE: "border-success-edge bg-success-soft text-success",
+  SI: "border-info-edge bg-info-soft text-info",
+  DV: "border-neutral-edge bg-neutral-soft text-neutral",
+  DPA: "border-neutral-edge bg-neutral-soft text-neutral",
 };
 
 export const JOB_KIND_LABELS: Record<JobKind, string> = {

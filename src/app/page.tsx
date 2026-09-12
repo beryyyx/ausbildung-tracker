@@ -30,11 +30,11 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
       <div className="flex items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Заявки</h1>
-          <p className="mt-1 text-sm text-zinc-500">{subtitle}</p>
+          <p className="mt-1 text-sm text-fg-muted">{subtitle}</p>
         </div>
         <Link
           href="/applications/new"
-          className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700"
+          className="rounded-md bg-accent px-4 py-control text-sm font-medium text-accent-on hover:bg-accent-hover"
         >
           Новая заявка
         </Link>
@@ -54,14 +54,14 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
 
 function EmptyState() {
   return (
-    <div className="rounded-lg border border-dashed border-zinc-300 bg-white px-6 py-16 text-center">
-      <p className="text-lg font-medium text-zinc-900">Заявок пока нет</p>
-      <p className="mt-1 text-sm text-zinc-500">
+    <div className="rounded-lg border border-dashed border-edge bg-surface px-6 py-16 text-center">
+      <p className="text-lg font-medium text-fg">Заявок пока нет</p>
+      <p className="mt-1 text-sm text-fg-muted">
         Добавьте первую заявку, чтобы начать отслеживать ответы и дедлайны.
       </p>
       <Link
         href="/applications/new"
-        className="mt-6 inline-block rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700"
+        className="mt-6 inline-block rounded-md bg-accent px-4 py-control text-sm font-medium text-accent-on hover:bg-accent-hover"
       >
         Добавить заявку
       </Link>
@@ -72,10 +72,10 @@ function EmptyState() {
 /** Заявки есть, но под фильтры ни одна не подошла. */
 function NothingFound() {
   return (
-    <div className="rounded-lg border border-dashed border-zinc-300 bg-white px-6 py-12 text-center">
-      <p className="text-lg font-medium text-zinc-900">{LIST_LABELS.nothingFoundTitle}</p>
-      <p className="mt-1 text-sm text-zinc-500">{LIST_LABELS.nothingFoundHint}</p>
-      <Link href="/" className="mt-4 inline-block text-sm text-zinc-700 underline hover:text-zinc-900">
+    <div className="rounded-lg border border-dashed border-edge bg-surface px-6 py-12 text-center">
+      <p className="text-lg font-medium text-fg">{LIST_LABELS.nothingFoundTitle}</p>
+      <p className="mt-1 text-sm text-fg-muted">{LIST_LABELS.nothingFoundHint}</p>
+      <Link href="/" className="mt-4 inline-block text-sm text-fg underline hover:text-fg">
         {LIST_LABELS.reset}
       </Link>
     </div>

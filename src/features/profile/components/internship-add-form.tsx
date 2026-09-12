@@ -107,7 +107,7 @@ export function InternshipAddForm({ action }: Props) {
       <button
         type="submit"
         disabled={pending}
-        className="rounded-md bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:cursor-wait disabled:opacity-60"
+        className="rounded-md bg-accent px-3 py-control text-sm font-medium text-accent-on hover:bg-accent-hover disabled:cursor-wait disabled:opacity-60"
       >
         {pending ? PROFILE_TEXTS.adding : PROFILE_TEXTS.add}
       </button>

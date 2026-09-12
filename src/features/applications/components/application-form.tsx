@@ -55,7 +55,7 @@ export function ApplicationForm({ action, initialValues, submitLabel }: Props) {
       {state.message && (
         <p
           role="alert"
-          className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+          className="rounded-md border border-danger-edge bg-danger-soft px-3 py-2 text-sm text-danger"
         >
           {state.message}
         </p>
@@ -213,15 +213,15 @@ export function ApplicationForm({ action, initialValues, submitLabel }: Props) {
         </Field>
       </div>
 
-      <div className="flex items-center gap-3 border-t border-zinc-200 pt-5">
+      <div className="flex items-center gap-3 border-t border-edge pt-5">
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:cursor-wait disabled:opacity-60"
+          className="rounded-md bg-accent px-4 py-control text-sm font-medium text-accent-on hover:bg-accent-hover disabled:cursor-wait disabled:opacity-60"
         >
           {pending ? "Сохраняем…" : submitLabel}
         </button>
-        <Link href="/" className="text-sm text-zinc-600 hover:text-zinc-900">
+        <Link href="/" className="text-sm text-fg-muted hover:text-fg">
           Отмена
         </Link>
       </div>

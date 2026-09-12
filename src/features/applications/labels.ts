@@ -11,11 +11,11 @@ export const STATUS_LABELS: Record<ApplicationStatus, string> = {
 
 /** Цвета метки статуса, классы Tailwind. */
 export const STATUS_STYLES: Record<ApplicationStatus, string> = {
-  draft: "border-zinc-200 bg-zinc-100 text-zinc-700",
-  sent: "border-blue-200 bg-blue-50 text-blue-700",
-  invitation: "border-amber-200 bg-amber-50 text-amber-800",
-  rejected: "border-red-200 bg-red-50 text-red-700",
-  offer: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  draft: "border-neutral-edge bg-neutral-soft text-neutral",
+  sent: "border-info-edge bg-info-soft text-info",
+  invitation: "border-warning-edge bg-warning-soft text-warning",
+  rejected: "border-danger-edge bg-danger-soft text-danger",
+  offer: "border-success-edge bg-success-soft text-success",
 };
 
 export const FIELD_LABELS = {

@@ -34,12 +34,12 @@ export default async function ApplicationPage({
             </h1>
             <StatusBadge status={application.status} />
           </div>
-          <p className="mt-1 text-sm text-zinc-500">
+          <p className="mt-1 text-sm text-fg-muted">
             {application.position}
             {application.city ? `, ${application.city}` : ""}
           </p>
           {application.source && (
-            <p className="mt-1 text-xs text-zinc-400">
+            <p className="mt-1 text-xs text-fg-subtle">
               Импорт из {SOURCE_LABELS[application.source]}
               {application.refnr ? `, номер ${application.refnr}` : ""}
             </p>
@@ -48,7 +48,7 @@ export default async function ApplicationPage({
         <DeleteButton id={application.id} />
       </div>
 
-      <div className="rounded-lg border border-zinc-200 bg-white p-6 shadow-sm">
+      <div className="rounded-lg border border-edge bg-surface p-card shadow-card">
         <ApplicationForm
           action={updateApplication.bind(null, application.id)}
           initialValues={applicationToFormValues(application)}
@@ -56,7 +56,7 @@ export default async function ApplicationPage({
         />
       </div>
 
-      <p className="text-xs text-zinc-400">
+      <p className="text-xs text-fg-subtle">
         Создано {formatDateTime(application.createdAt)}, изменено{" "}
         {formatDateTime(application.updatedAt)}
       </p>

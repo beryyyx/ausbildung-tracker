@@ -20,7 +20,7 @@ export function FilterBar({
     <form
       method="get"
       action="/"
-      className="flex flex-wrap items-center gap-x-5 gap-y-3 rounded-lg border border-zinc-200 bg-white px-4 py-3 text-sm shadow-sm"
+      className="flex flex-wrap items-center gap-x-5 gap-y-3 rounded-lg border border-edge bg-surface px-4 py-row text-sm shadow-card"
     >
       <fieldset className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <legend className="sr-only">{LIST_LABELS.statusFilter}</legend>
@@ -31,10 +31,10 @@ export function FilterBar({
               name="status"
               value={status}
               defaultChecked={filter.statuses.includes(status)}
-              className="h-4 w-4 rounded border-zinc-300 accent-zinc-900"
+              className="h-4 w-4 rounded border-edge accent-accent"
             />
-            <span className="text-zinc-700">{STATUS_LABELS[status]}</span>
-            <span className="text-xs text-zinc-400">{counts[status]}</span>
+            <span className="text-fg">{STATUS_LABELS[status]}</span>
+            <span className="text-xs text-fg-subtle">{counts[status]}</span>
           </label>
         ))}
       </fieldset>
@@ -45,18 +45,18 @@ export function FilterBar({
         defaultValue={filter.q}
         placeholder={LIST_LABELS.searchPlaceholder}
         aria-label={LIST_LABELS.search}
-        className="min-w-[14rem] flex-1 rounded-md border border-zinc-300 bg-white px-3 py-1.5 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500"
+        className="min-w-[14rem] flex-1 rounded-md border border-edge bg-surface px-3 py-1.5 outline-none focus:border-accent focus:ring-1 focus:ring-accent"
       />
 
       <button
         type="submit"
-        className="rounded-md bg-zinc-900 px-3 py-1.5 font-medium text-white hover:bg-zinc-700"
+        className="rounded-md bg-accent px-3 py-1.5 font-medium text-accent-on hover:bg-accent-hover"
       >
         {LIST_LABELS.apply}
       </button>
 
       {isFilterActive(filter) && (
-        <Link href="/" className="text-zinc-500 hover:text-zinc-900">
+        <Link href="/" className="text-fg-muted hover:text-fg">
           {LIST_LABELS.reset}
         </Link>
       )}

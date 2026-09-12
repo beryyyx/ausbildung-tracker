@@ -1,9 +1,184 @@
 @import "tailwindcss";
 
+/*
+ * Система оформления. Все цвета, отступы, радиусы и размеры шрифтов заданы здесь
+ * и только здесь. Компоненты используют утилиты Tailwind, привязанные к этим
+ * переменным (bg-surface, text-fg-muted, py-row…), а не цвета напрямую.
+ *
+ * Три переключателя живут атрибутами на <html>, их ставит layout.tsx из cookie:
+ *   data-theme    light | dark, отсутствует = системная (prefers-color-scheme)
+ *   data-accent   blue | green | violet | orange | pink
+ *   data-density  normal | compact
+ *
+ * Каждый цвет записан один раз как light-dark(светлый, тёмный): браузер берёт
+ * нужную половину по color-scheme, который задаёт тема. Семантические цвета
+ * (статусы, сообщения) не зависят от акцента: отказ всегда красный, оффер
+ * всегда зелёный, какой бы акцент ни был выбран.
+ */
+
+/* ---------- Тема ---------- */
+:root {
+  color-scheme: light dark; /* системная: следует за настройкой ОС */
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* ---------- Нейтральные и семантические цвета ---------- */
+:root {
+  --canvas: light-dark(#f6f8fa, #0d1117); /* фон страницы */
+  --surface: light-dark(#ffffff, #161b22); /* карточки, таблицы, поля */
+  --surface-muted: light-dark(#f6f8fa, #1c2129); /* шапки таблиц, подложки */
+  --surface-hover: light-dark(#eef1f5, #21262d); /* строка под курсором */
+  --fg: light-dark(#1f2328, #e6edf3); /* основной текст */
+  --fg-muted: light-dark(#59636e, #9ea7b3); /* подписи, второстепенный текст */
+  --fg-subtle: light-dark(#5f6973, #8b949e); /* подсказки и счётчики, только мелкий текст */
+  --edge: light-dark(#d1d9e0, #30363d); /* границы карточек и полей */
+  --edge-muted: light-dark(#e4e8ec, #262c36); /* разделители строк */
+  --shadow: light-dark(0 1px 2px rgb(31 35 40 / 0.06), 0 1px 2px rgb(0 0 0 / 0.4));
+
+  /* X: текст и иконки, X-soft: подложка бейджа или сообщения, X-edge: его рамка */
+  --neutral: light-dark(#59636e, #9ea7b3);
+  --neutral-soft: light-dark(#f0f2f5, #21262d);
+  --neutral-edge: light-dark(#c3ccd5, #3d444d);
+  --info: light-dark(#0550ae, #79c0ff);
+  --info-soft: light-dark(#ddf4ff, #132a47);
+  --info-edge: light-dark(#80c2ff, #1f4f8f);
+  --success: light-dark(#116329, #56d364);
+  --success-soft: light-dark(#dafbe1, #12301f);
+  --success-edge: light-dark(#7bd894, #1f5a30);
+  --warning: light-dark(#7d4e00, #e3b341);
+  --warning-soft: light-dark(#fff8c5, #3a2b10);
+  --warning-edge: light-dark(#e8c86a, #6b4f14);
+  --danger: light-dark(#a40e26, #ff8a80);
+  --danger-soft: light-dark(#ffebe9, #3d1518);
+  --danger-edge: light-dark(#ffa39d, #7a2b30);
+  --purple: light-dark(#6639ba, #d2a8ff);
+  --purple-soft: light-dark(#fbefff, #2a1f45);
+  --purple-edge: light-dark(#d8b9ff, #563a94);
+}
+
+/* ---------- Акцент ---------- */
+/* --accent: заливка кнопок и активных элементов, на ней текст --accent-on.
+   --accent-fg: цвет ссылок на фоне страницы, в тёмной теме светлее заливки. */
+:root,
+[data-accent="blue"] {
+  --accent: light-dark(#0969da, #1f6feb);
+  --accent-fg: light-dark(#0969da, #58a6ff);
+}
+[data-accent="green"] {
+  --accent: light-dark(#1a7f37, #238636);
+  --accent-fg: light-dark(#1a7f37, #3fb950);
+}
+[data-accent="violet"] {
+  --accent: light-dark(#8250df, #8957e5);
+  --accent-fg: light-dark(#8250df, #a371f7);
+}
+[data-accent="orange"] {
+  --accent: light-dark(#bc4c00, #bd561d);
+  --accent-fg: light-dark(#bc4c00, #f0883e);
+}
+[data-accent="pink"] {
+  --accent: light-dark(#bf3989, #bf4b8a);
+  --accent-fg: light-dark(#bf3989, #f778ba);
+}
+:root {
+  --accent-on: #ffffff;
+  --accent-hover: color-mix(in oklab, var(--accent) 85%, var(--fg));
+  --accent-soft: color-mix(in oklab, var(--accent) 12%, var(--surface));
+}
+
+/* ---------- Плотность ---------- */
+:root {
+  --row-y: 0.625rem; /* вертикальный отступ ячейки таблицы */
+  --control-y: 0.5rem; /* вертикальный отступ полей и кнопок */
+  --card: 1.5rem; /* внутренний отступ карточки */
+}
+[data-density="compact"] {
+  --row-y: 0.3rem;
+  --control-y: 0.3rem;
+  --card: 1rem;
+}
+
+/* ---------- Подключение к Tailwind ---------- */
+/* inline: утилита ссылается на переменную во время работы, поэтому смена
+   атрибута на <html> меняет цвета без пересборки. Стандартная палитра
+   Tailwind отключена: bg-zinc-50 и подобные классы больше не существуют. */
 @theme inline {
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --color-*: initial;
+
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-hover: var(--surface-hover);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-edge: var(--edge);
+  --color-edge-muted: var(--edge-muted);
+
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-on: var(--accent-on);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+
+  --color-neutral: var(--neutral);
+  --color-neutral-soft: var(--neutral-soft);
+  --color-neutral-edge: var(--neutral-edge);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-info-edge: var(--info-edge);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-success-edge: var(--success-edge);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-edge: var(--warning-edge);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-danger-edge: var(--danger-edge);
+  --color-purple: var(--purple);
+  --color-purple-soft: var(--purple-soft);
+  --color-purple-edge: var(--purple-edge);
+
+  --shadow-card: var(--shadow);
+
+  --spacing-row: var(--row-y);
+  --spacing-control: var(--control-y);
+  --spacing-card: var(--card);
+}
+
+@theme {
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.5;
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.55;
+  --text-base: 0.875rem;
+  --text-base--line-height: 1.5;
+  --text-lg: 1rem;
+  --text-lg--line-height: 1.5;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.3;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 1.25;
 }
 
 body {
   font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--text-base--line-height);
+  background-color: var(--canvas);
+  color: var(--fg);
 }

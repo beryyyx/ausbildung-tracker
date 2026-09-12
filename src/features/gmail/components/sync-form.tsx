@@ -37,7 +37,7 @@ export function SyncForm({ action, persisted, disabled, actions }: Props) {
           <button
             type="submit"
             disabled={pending || disabled}
-            className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-md bg-accent px-4 py-control text-sm font-medium text-accent-on hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
           >
             {pending ? GMAIL_TEXTS.syncing : GMAIL_TEXTS.sync}
           </button>

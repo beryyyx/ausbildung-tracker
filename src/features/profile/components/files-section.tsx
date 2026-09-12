@@ -15,13 +15,13 @@ export function fileUrl(id: number): string {
 
 export function FilesSection({ files }: { files: ProfileFile[] }) {
   return (
-    <section className="space-y-4 rounded-lg border border-zinc-200 bg-white p-6 shadow-sm">
+    <section className="space-y-4 rounded-lg border border-edge bg-surface p-card shadow-card">
       <h2 className="text-lg font-semibold">{SECTION_TITLES.files}</h2>
 
       {files.length === 0 ? (
-        <p className="text-sm text-zinc-500">{PROFILE_TEXTS.emptyFiles}</p>
+        <p className="text-sm text-fg-muted">{PROFILE_TEXTS.emptyFiles}</p>
       ) : (
-        <ul className="divide-y divide-zinc-100 text-sm">
+        <ul className="divide-y divide-edge-muted text-sm">
           {files.map((file) => (
             <li key={file.id} className="flex items-center justify-between gap-4 py-2">
               <div className="min-w-0">
@@ -29,11 +29,11 @@ export function FilesSection({ files }: { files: ProfileFile[] }) {
                   href={fileUrl(file.id)}
                   target="_blank"
                   rel="noreferrer"
-                  className="font-medium text-zinc-900 underline-offset-2 hover:underline"
+                  className="font-medium text-fg underline-offset-2 hover:underline"
                 >
                   {file.fileName}
                 </a>
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs text-fg-muted">
                   {formatFileSize(file.sizeBytes)}, {formatDateTime(file.createdAt)}
                 </p>
               </div>
@@ -47,7 +47,7 @@ export function FilesSection({ files }: { files: ProfileFile[] }) {
         </ul>
       )}
 
-      <div className="border-t border-zinc-200 pt-4">
+      <div className="border-t border-edge pt-4">
         <FileUploadForm action={uploadFile} />
       </div>
     </section>

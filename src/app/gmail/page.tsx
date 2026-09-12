@@ -52,7 +52,7 @@ export default async function GmailPage({ searchParams }: PageProps<"/gmail">) {
     <div className="mx-auto max-w-3xl space-y-8">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">{GMAIL_TEXTS.pageTitle}</h1>
-        <p className="mt-1 text-sm text-zinc-500">{GMAIL_TEXTS.pageHint}</p>
+        <p className="mt-1 text-sm text-fg-muted">{GMAIL_TEXTS.pageHint}</p>
       </div>
 
       {callbackError && <FormMessage kind="error">{callbackError}</FormMessage>}

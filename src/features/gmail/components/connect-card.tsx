@@ -6,14 +6,14 @@ export const CONNECT_PATH = "/api/gmail/connect";
 /** Gmail ещё не подключён: объяснение прав и кнопка. */
 export function ConnectCard() {
   return (
-    <section className="space-y-4 rounded-lg border border-zinc-200 bg-white p-6 shadow-sm">
+    <section className="space-y-4 rounded-lg border border-edge bg-surface p-card shadow-card">
       <div>
         <h2 className="text-lg font-semibold">{GMAIL_TEXTS.connectTitle}</h2>
-        <p className="mt-1 text-sm text-zinc-600">{GMAIL_TEXTS.permissionsHint}</p>
+        <p className="mt-1 text-sm text-fg-muted">{GMAIL_TEXTS.permissionsHint}</p>
       </div>
       <a
         href={CONNECT_PATH}
-        className="inline-block rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700"
+        className="inline-block rounded-md bg-accent px-4 py-control text-sm font-medium text-accent-on hover:bg-accent-hover"
       >
         {GMAIL_TEXTS.connect}
       </a>
@@ -24,7 +24,7 @@ export function ConnectCard() {
 /** Переменных Google в .env нет: подключать нечем. */
 export function NotConfiguredCard() {
   return (
-    <section className="rounded-lg border border-amber-200 bg-amber-50 p-6 text-sm text-amber-800">
+    <section className="rounded-lg border border-warning-edge bg-warning-soft p-card text-sm text-warning">
       <h2 className="text-lg font-semibold">{GMAIL_TEXTS.notConfiguredTitle}</h2>
       <p className="mt-1">{GMAIL_TEXTS.notConfiguredHint}</p>
     </section>

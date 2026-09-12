@@ -28,8 +28,8 @@ export function ImportButton({
         <span
           className={
             result.status === "created"
-              ? "font-medium text-emerald-700"
-              : "text-zinc-500"
+              ? "font-medium text-success"
+              : "text-fg-muted"
           }
         >
           {result.status === "created"
@@ -38,7 +38,7 @@ export function ImportButton({
         </span>
         <Link
           href={`/applications/${result.applicationId}`}
-          className="text-zinc-700 underline hover:text-zinc-900"
+          className="text-fg underline hover:text-fg"
         >
           {SEARCH_LABELS.open}
         </Link>
@@ -56,12 +56,12 @@ export function ImportButton({
             setResult(await importJobListing(listing));
           });
         }}
-        className="whitespace-nowrap rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-800 hover:bg-zinc-50 disabled:cursor-wait disabled:opacity-60"
+        className="whitespace-nowrap rounded-md border border-edge bg-surface px-3 py-1.5 text-sm font-medium text-fg hover:bg-surface-hover disabled:cursor-wait disabled:opacity-60"
       >
         {pending ? SEARCH_LABELS.importing : SEARCH_LABELS.import}
       </button>
       {result?.status === "error" && (
-        <p className="text-xs text-red-600" role="alert">
+        <p className="text-xs text-danger" role="alert">
           {result.message}
         </p>
       )}
