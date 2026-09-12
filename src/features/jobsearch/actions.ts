@@ -8,6 +8,7 @@ import { db } from "@/db";
 import { APPLICATION_SOURCES, applications } from "@/db/schema";
 import { SOURCE_LABELS } from "@/features/applications/labels";
 import { formatDate, todayIso } from "@/lib/dates";
+import { httpUrl } from "@/lib/form-schema";
 
 import { JOB_KIND_LABELS } from "./labels";
 import type { JobListing } from "./types";
@@ -24,7 +25,7 @@ const listingSchema = z.object({
   distanceKm: z.number().min(0).nullable(),
   startDate: z.iso.date().nullable(),
   publishedAt: z.iso.date().nullable(),
-  url: z.url(),
+  url: httpUrl(),
   kind: z.enum(["ausbildung", "duales-studium"]),
 });
 

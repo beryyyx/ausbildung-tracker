@@ -25,6 +25,13 @@ export const optionalText = (max: number) =>
     z.string().max(max, `Не длиннее ${max} символов`).nullable(),
   );
 
+/**
+ * Ссылка только со схемой http или https. Голый z.url() принимает любую схему,
+ * включая javascript:, а ссылка потом попадает в href.
+ */
+export const httpUrl = (message = "Ссылка должна начинаться с http:// или https://") =>
+  z.url({ protocol: /^https?$/, error: message });
+
 export const optionalDate = z.preprocess(
   emptyToNull,
   z.iso.date({ error: "Дата должна быть в формате ГГГГ-ММ-ДД" }).nullable(),

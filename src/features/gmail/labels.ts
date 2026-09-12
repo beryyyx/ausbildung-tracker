@@ -1,3 +1,5 @@
+import type { ApplicationStatus } from "@/db/schema";
+import { STATUS_LABELS } from "@/features/applications/labels";
 import { formatDatedNoteLine } from "@/features/applications/notes";
 import { pluralize } from "@/lib/plural";
 
@@ -94,6 +96,14 @@ export function formatNoteLine(
     message.receivedAt,
     `${GMAIL_TEXTS.noteFrom} ${formatSender(message)}: ${subject}`,
   );
+}
+
+/** Ошибка «Применить», когда письмо предлагает статус ниже текущего (см. STATUS_RANK). */
+export function downgradeBlockedText(
+  current: ApplicationStatus,
+  proposed: ApplicationStatus,
+): string {
+  return `Заявка уже в статусе «${STATUS_LABELS[current]}», а письмо предлагает «${STATUS_LABELS[proposed]}». Назад статус не понижается: нажмите «${GMAIL_TEXTS.note}» или измените статус вручную в списке заявок.`;
 }
 
 /** Подпись для случая нескольких подходящих заявок. Число подставляется в интерфейсе. */

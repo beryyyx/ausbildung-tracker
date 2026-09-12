@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { db } from "@/db";
-import { APPLICATION_STATUSES, gmailMessages } from "@/db/schema";
+import { APPLICATION_STATUSES, STATUS_RANK, gmailMessages } from "@/db/schema";
 import {
   insertApplicationNote,
   setApplicationStatus,
@@ -13,7 +13,7 @@ import {
 import { getApplication } from "@/features/applications/queries";
 
 import { deleteAccount } from "./account";
-import { GMAIL_TEXTS, formatNoteLine } from "./labels";
+import { GMAIL_TEXTS, downgradeBlockedText, formatNoteLine } from "./labels";
 import { getPendingMessage } from "./queries";
 import { runGmailSync } from "./sync";
 import type { SyncOutcome } from "./types";
@@ -69,6 +69,15 @@ export async function applySuggestion(
   ]);
   if (!message || !application) {
     return { ok: false, message: GMAIL_TEXTS.applyError };
+  }
+
+  // Письмо-подтверждение может прийти, когда заявка уже в приглашении или оффере.
+  // Назад статус не понижаем: для такой переписки есть «Учесть без смены статуса».
+  if (STATUS_RANK[parsedStatus.data] < STATUS_RANK[application.status]) {
+    return {
+      ok: false,
+      message: downgradeBlockedText(application.status, parsedStatus.data),
+    };
   }
 
   // Та же логика, что у быстрой смены статуса в таблице: подставляет дату отправки.

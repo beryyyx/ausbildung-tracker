@@ -3,6 +3,7 @@ import { z } from "zod";
 import { APPLICATION_STATUSES, type Application } from "@/db/schema";
 import {
   emptyToNull,
+  httpUrl,
   optionalDate,
   optionalInt,
   optionalText,
@@ -19,10 +20,7 @@ export const applicationInputSchema = z.object({
   company: requiredText("Укажите компанию", 200),
   position: requiredText("Укажите профессию", 200),
   city: optionalText(120),
-  url: z.preprocess(
-    emptyToNull,
-    z.url({ error: "Ссылка должна начинаться с http:// или https://" }).nullable(),
-  ),
+  url: z.preprocess(emptyToNull, httpUrl().nullable()),
   appliedAt: optionalDate,
   status: z.enum(APPLICATION_STATUSES, { error: "Неизвестный статус" }),
   deadline: optionalDate,

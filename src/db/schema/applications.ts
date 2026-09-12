@@ -17,6 +17,20 @@ export const APPLICATION_STATUSES = [
 export type ApplicationStatus = (typeof APPLICATION_STATUSES)[number];
 
 /**
+ * Порядок статусов: заявка движется только вперёд. Отказ и оффер — конечные,
+ * на одном уровне, между ними переход возможен в обе стороны (оффер отозван,
+ * отказ пересмотрен). Автоматика (предложения из Gmail) не понижает статус;
+ * ручной выбор в списке заявок этим правилом не ограничен.
+ */
+export const STATUS_RANK: Record<ApplicationStatus, number> = {
+  draft: 0,
+  sent: 1,
+  invitation: 2,
+  rejected: 3,
+  offer: 3,
+};
+
+/**
  * Источники вакансий для импорта. Без CHECK в БД: список будет расти,
  * а миграция ради каждого нового источника не нужна.
  * Реализации живут в src/features/jobsearch/sources/.

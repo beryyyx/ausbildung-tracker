@@ -5,25 +5,46 @@ import { normalizeText } from "./matching";
 /**
  * Определение типа письма по ключевым словам в теме и первых строках.
  * Слова записаны в нормализованном виде (см. normalizeText): нижний регистр,
- * умлауты как ae/oe/ue/ss. Ищутся как подстроки, чтобы ловить немецкие
- * составные слова: «Terminvorschlag», «Absageschreiben».
+ * умлауты как ae/oe/ue/ss, знаки препинания заменены пробелом. Ищутся как
+ * подстроки, чтобы ловить немецкие составные слова и формы: «absage» покрывает
+ * «eine Absage» и «Absageschreiben», основа «nicht beruecksichtig» — и
+ * «berücksichtigen», и «berücksichtigt». Одиночные «termin» и «leider» слишком
+ * широкие (перенос срока, задержка ответа), поэтому только в сочетаниях.
  */
 const KEYWORDS: Record<GmailSuggestedStatus, readonly string[]> = {
   invitation: [
     "einladung",
-    "vorstellungsgespraech",
-    "termin",
-    "kennenlernen",
     "einladen",
+    "vorstellungsgespraech",
+    "bewerbungsgespraech",
+    "kennenlerngespraech",
+    "kennenlernen",
     "gespraechstermin",
+    "terminvorschlag",
+    "terminvorschlaege",
+    "zu einem gespraech",
+    "zum gespraech",
+    "zum interview",
   ],
   rejected: [
     "absage",
-    "leider",
-    "bedauern",
-    "bedauerlicherweise",
-    "nicht beruecksichtigen",
     "abgesagt",
+    "bedauerlicherweise",
+    "wir bedauern",
+    "unserem bedauern",
+    "leider nicht",
+    "leider keine",
+    "leider muessen wir",
+    "nicht beruecksichtig",
+    "nicht weiter beruecksichtig",
+    "anderen bewerber",
+    "andere bewerber",
+    "anderen kandidat",
+    "andere kandidat",
+    "fuer einen anderen",
+    "keine zusage",
+    "nicht entsprechen",
+    "nicht entsprochen",
   ],
   sent: [
     "eingangsbestaetigung",
