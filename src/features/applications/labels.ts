@@ -34,3 +34,16 @@ export const FIELD_LABELS = {
 export const SOURCE_LABELS: Record<ApplicationSource, string> = {
   arbeitsagentur: "Arbeitsagentur",
 };
+
+/** Тексты списка заявок: панель фильтров и пустые состояния. */
+export const LIST_LABELS = {
+  statusFilter: "Статус",
+  search: "Поиск",
+  searchPlaceholder: "Компания, профессия или город",
+  apply: "Показать",
+  reset: "Сбросить",
+  shown: "показано",
+  of: "из",
+  nothingFoundTitle: "Ничего не найдено",
+  nothingFoundHint: "Под выбранные статусы и текст поиска не подходит ни одна заявка.",
+} as const;
