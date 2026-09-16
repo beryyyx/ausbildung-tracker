@@ -51,15 +51,6 @@ function buildNotes(listing: z.infer<typeof listingSchema>): string {
     .join("\n");
 }
 
-function isUniqueViolation(error: unknown): boolean {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "code" in error &&
-    (error as { code?: unknown }).code === "SQLITE_CONSTRAINT_UNIQUE"
-  );
-}
-
 async function findByRefnr(refnr: string) {
   return await db
     .select({ id: applications.id })
@@ -99,7 +90,7 @@ export async function importJobListing(input: JobListing): Promise<ImportResult>
     return { status: "created", applicationId: row.id };
   } catch (error) {
     // Гонка: ту же вакансию добавили между проверкой и вставкой.
-    if (isUniqueViolation(error)) {
+    if ((error as { code?: string }).code === "SQLITE_CONSTRAINT_UNIQUE") {
       const raced = await findByRefnr(listing.refnr);
       if (raced) return { status: "exists", applicationId: raced.id };
     }

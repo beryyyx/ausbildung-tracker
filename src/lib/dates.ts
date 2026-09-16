@@ -1,10 +1,6 @@
-/** Сегодняшняя дата в формате YYYY-MM-DD по локальному времени машины. */
+/** Сегодняшняя дата в формате YYYY-MM-DD по локальному времени машины: шведская локаль пишет даты именно так. */
 export function todayIso(): string {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+  return new Date().toLocaleDateString("sv-SE");
 }
 
 /** YYYY-MM-DD → DD.MM.YYYY. Для пустого значения возвращает пустую строку. */

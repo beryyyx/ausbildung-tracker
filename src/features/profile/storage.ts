@@ -56,7 +56,7 @@ export async function readUpload(storedName: string): Promise<Buffer | null> {
   try {
     return await fs.readFile(resolveStoredPath(storedName));
   } catch (error) {
-    if (isMissingFile(error)) return null;
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
     throw error;
   }
 }
@@ -66,16 +66,7 @@ export async function removeUpload(storedName: string): Promise<void> {
   try {
     await fs.unlink(resolveStoredPath(storedName));
   } catch (error) {
-    if (isMissingFile(error)) return;
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return;
     throw error;
   }
-}
-
-function isMissingFile(error: unknown): boolean {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "code" in error &&
-    error.code === "ENOENT"
-  );
 }
