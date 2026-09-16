@@ -30,7 +30,7 @@ export default async function ApplicationPage({
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <h1 className="text-2xl font-semibold tracking-tight">
+            <h1 className="text-3xl font-semibold tracking-tight">
               {application.company}
             </h1>
             <StatusBadge status={application.status} />

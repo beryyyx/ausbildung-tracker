@@ -1,3 +1,5 @@
+import { Award, CalendarCheck, FileText, Send, XCircle, type LucideIcon } from "lucide-react";
+
 import type { ApplicationSource, ApplicationStatus } from "@/db/schema";
 
 /** Русские подписи статусов. Типизация не даст забыть новый статус. */
@@ -26,6 +28,39 @@ export const STATUS_DOT_STYLES: Record<ApplicationStatus, string> = {
   rejected: "bg-danger",
   offer: "bg-success",
 };
+
+/** Иконка статуса: в бейджах, воронке и плитках сводки. */
+export const STATUS_ICONS: Record<ApplicationStatus, LucideIcon> = {
+  draft: FileText,
+  sent: Send,
+  invitation: CalendarCheck,
+  rejected: XCircle,
+  offer: Award,
+};
+
+/** Тексты панели сводки и воронки на главной. */
+export const DASHBOARD_LABELS = {
+  total: "Всего заявок",
+  drafts: "Черновиков",
+  draftsHint: "ещё не отправлено",
+  waiting: "Ждут ответа",
+  invitations: "Приглашений",
+  invitationRate: "от отправленных",
+  nextDeadline: "Ближайший дедлайн",
+  noDeadline: "Нет",
+  noDeadlineHint: "у черновиков нет дедлайнов",
+  funnelTitle: "Воронка",
+  funnelHint: "Сколько заявок на каждой стадии. Нажмите на стадию, чтобы отфильтровать список.",
+  funnelEmpty: "Воронка появится, когда будет хотя бы одна заявка.",
+  rejected: "Отказов",
+  gettingStarted: "С чего начать",
+  steps: {
+    add: { title: "Добавить заявку", hint: "Компания, профессия, дедлайн — остальное потом." },
+    search: { title: "Найти вакансии", hint: "Поиск по Arbeitsagentur с импортом в заявки." },
+    profile: { title: "Заполнить профиль", hint: "Оценки, языки, Praktika для будущего Anschreiben." },
+    gmail: { title: "Подключить Gmail", hint: "Ответы компаний сами станут предложениями сменить статус." },
+  },
+} as const;
 
 export const FIELD_LABELS = {
   company: "Компания",

@@ -1,3 +1,4 @@
+import { Building2, CalendarDays, MapPin, SearchX } from "lucide-react";
 import Link from "next/link";
 
 import { Badge } from "@/components/badge";
@@ -30,12 +31,13 @@ export function ResultsList({
   query: JobSearchQuery;
 }) {
   if (result.sourceTotal === 0) {
-    return <EmptyState title={SEARCH_LABELS.emptyTitle} hint={SEARCH_LABELS.emptyHint} />;
+    return <EmptyState icon={SearchX} title={SEARCH_LABELS.emptyTitle} hint={SEARCH_LABELS.emptyHint} />;
   }
 
   if (result.listings.length === 0) {
     return (
       <EmptyState
+        icon={CalendarDays}
         title={SEARCH_LABELS.noneAfterDate}
         hint={`${SEARCH_LABELS.sourceFound} ${result.sourceTotal} ${pluralize(result.sourceTotal, ["вакансию", "вакансии", "вакансий"])}, ${SEARCH_LABELS.allStartEarlier}${query.startFrom ? ` ${formatDate(query.startFrom)}` : ""}. ${SEARCH_LABELS.moveDateHint}`}
       />
@@ -87,11 +89,15 @@ function ListingCard({ listing }: { listing: JobListing }) {
 
   return (
     <div className="min-w-0 flex-1 space-y-1.5">
+      <p className="flex items-center gap-1.5 text-base font-semibold text-fg">
+        <Building2 aria-hidden size={16} className="shrink-0 text-fg-subtle" />
+        {listing.company ?? SEARCH_LABELS.noCompany}
+      </p>
       <a
         href={listing.url}
         target="_blank"
         rel="noreferrer"
-        className="block rounded-sm font-medium text-fg outline-none hover:text-accent-fg hover:underline focus-visible:ring-2 focus-visible:ring-accent"
+        className="block rounded-sm text-sm text-fg-muted outline-none hover:text-accent-fg hover:underline focus-visible:ring-2 focus-visible:ring-accent"
       >
         {listing.title}
       </a>
@@ -118,14 +124,19 @@ function ListingCard({ listing }: { listing: JobListing }) {
         </div>
       )}
 
-      <p className="text-sm text-fg-muted">
-        <span className="text-fg">{listing.company ?? SEARCH_LABELS.noCompany}</span>
-        {place && <> · {place}</>}
-        {listing.distanceKm !== null && (
-          <>
-            {" "}
-            · {listing.distanceKm} {SEARCH_LABELS.distance}
-          </>
+      <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-fg-muted">
+        {place && (
+          <span className="inline-flex items-center gap-1">
+            <MapPin aria-hidden size={14} className="shrink-0 text-fg-subtle" />
+            {place}
+            {listing.distanceKm !== null && ` · ${listing.distanceKm} ${SEARCH_LABELS.distance}`}
+          </span>
+        )}
+        {listing.startDate && (
+          <span className="inline-flex items-center gap-1">
+            <CalendarDays aria-hidden size={14} className="shrink-0 text-fg-subtle" />
+            {SEARCH_LABELS.start} {formatDate(listing.startDate)}
+          </span>
         )}
       </p>
 
@@ -135,14 +146,11 @@ function ListingCard({ listing }: { listing: JobListing }) {
             {SEARCH_LABELS.profession}: {listing.profession}
           </>
         )}
-        {listing.startDate && (
+        {listing.publishedAt && (
           <>
             {listing.profession && " · "}
-            {SEARCH_LABELS.start} {formatDate(listing.startDate)}
+            {SEARCH_LABELS.published} {formatDate(listing.publishedAt)}
           </>
-        )}
-        {listing.publishedAt && (
-          <> · {SEARCH_LABELS.published} {formatDate(listing.publishedAt)}</>
         )}
       </p>
     </div>

@@ -3,8 +3,13 @@ export default function Loading() {
   return (
     <div aria-busy aria-label="Загрузка" className="animate-pulse space-y-stack">
       <div className="space-y-2">
-        <div className="h-7 w-48 rounded-md bg-surface-muted" />
+        <div className="h-8 w-48 rounded-md bg-surface-muted" />
         <div className="h-4 w-72 max-w-full rounded-md bg-surface-muted" />
+      </div>
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
+        {[0, 1, 2, 3, 4].map((i) => (
+          <div key={i} className="h-24 rounded-lg border border-edge bg-surface" />
+        ))}
       </div>
       <div className="h-12 rounded-lg border border-edge bg-surface" />
       <div className="space-y-px overflow-hidden rounded-lg border border-edge bg-surface">

@@ -1,3 +1,5 @@
+import { Mail } from "lucide-react";
+
 import { buttonClass } from "@/components/button";
 import { Panel } from "@/components/panel";
 
@@ -13,6 +15,7 @@ export function ConnectCard() {
       <div className="space-y-4">
         <p className="text-sm text-fg-muted">{GMAIL_TEXTS.permissionsHint}</p>
         <a href={CONNECT_PATH} className={buttonClass("primary")}>
+          <Mail aria-hidden size={14} />
           {GMAIL_TEXTS.connect}
         </a>
       </div>

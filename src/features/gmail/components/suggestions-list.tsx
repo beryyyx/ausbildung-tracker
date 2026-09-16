@@ -1,3 +1,5 @@
+import { MailCheck } from "lucide-react";
+
 import { EmptyState } from "@/components/empty-state";
 import { panelClass } from "@/components/panel";
 import type { GmailMessage } from "@/db/schema";
@@ -38,6 +40,7 @@ export function SuggestionsList({
 
       {count === 0 ? (
         <EmptyState
+          icon={MailCheck}
           title={GMAIL_TEXTS.suggestionsEmptyTitle}
           hint={
             connected

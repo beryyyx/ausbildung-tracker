@@ -1,7 +1,9 @@
+import { ClipboardList, Mail, Plus, Search, UserRound } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
 import { buttonClass } from "@/components/button";
+import { Footer } from "@/components/footer";
 import { NavLink } from "@/components/nav-link";
 import { SettingsMenu } from "@/features/settings/components/settings-menu";
 import { readSettings } from "@/features/settings/cookies";
@@ -17,10 +19,10 @@ export const metadata: Metadata = {
 };
 
 const NAV_ITEMS = [
-  { href: "/", label: "Заявки" },
-  { href: "/suche", label: "Поиск" },
-  { href: "/profile", label: "Профиль" },
-  { href: "/gmail", label: "Gmail" },
+  { href: "/", label: "Заявки", icon: ClipboardList },
+  { href: "/suche", label: "Поиск", icon: Search },
+  { href: "/profile", label: "Профиль", icon: UserRound },
+  { href: "/gmail", label: "Gmail", icon: Mail },
 ] as const;
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
@@ -38,7 +40,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col bg-canvas text-fg">
         <header className="border-b border-edge bg-surface">
           {/* На узком экране навигация уходит на вторую строку и прокручивается по горизонтали. */}
-          <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-4 px-4">
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 px-4">
             <Link
               href="/"
               className="mr-auto flex items-center gap-2 py-3 font-semibold tracking-tight md:mr-0"
@@ -48,7 +50,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             </Link>
             <nav className="order-last -mx-1 flex basis-full items-center gap-1 overflow-x-auto text-sm md:order-none md:mx-0 md:basis-auto md:flex-1">
               {NAV_ITEMS.map((item) => (
-                <NavLink key={item.href} href={item.href}>
+                <NavLink key={item.href} href={item.href} icon={<item.icon size={16} />}>
                   {item.label}
                 </NavLink>
               ))}
@@ -56,13 +58,14 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             <div className="flex items-center gap-2 py-2">
               <SettingsMenu settings={settings} />
               <Link href="/applications/new" className={buttonClass("primary", "sm")}>
-                <span aria-hidden>+</span>
+                <Plus aria-hidden size={14} />
                 <span className="sr-only sm:not-sr-only">Добавить</span>
               </Link>
             </div>
           </div>
         </header>
-        <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8">{children}</main>
+        <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8">{children}</main>
+        <Footer />
       </body>
     </html>
   );

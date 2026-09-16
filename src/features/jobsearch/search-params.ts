@@ -1,12 +1,11 @@
 import { z } from "zod";
 
+import { TARGET_START_YEAR } from "@/lib/goals";
+
 import type { JobSearchQuery } from "./types";
 
-/**
- * Целевой год начала Ausbildung. Единственное место, где он задан:
- * от него считается дефолт фильтра «Старт не раньше». Через год поменять здесь.
- */
-export const TARGET_START_YEAR = 2027;
+/** Дефолт фильтра «Старт не раньше»: 1 января целевого года, сам год задан в src/lib/goals.ts. */
+export { TARGET_START_YEAR };
 export const DEFAULT_START_FROM = `${TARGET_START_YEAR}-01-01`;
 
 /** Остальные значения по умолчанию из критериев поиска в CLAUDE.md. */

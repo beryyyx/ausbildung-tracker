@@ -1,5 +1,6 @@
 "use client";
 
+import { Trash2 } from "lucide-react";
 import { useTransition } from "react";
 
 import { buttonClass } from "@/components/button";
@@ -22,6 +23,7 @@ export function DeleteButton({ id }: { id: number }) {
       aria-busy={pending}
       className={buttonClass("danger")}
     >
+      <Trash2 aria-hidden size={14} />
       {pending ? "Удаляем…" : "Удалить"}
     </button>
   );

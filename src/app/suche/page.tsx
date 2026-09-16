@@ -21,7 +21,7 @@ export default async function SearchPage({ searchParams }: PageProps<"/suche">) 
   return (
     <div className="space-y-stack">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{SEARCH_LABELS.title}</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">{SEARCH_LABELS.title}</h1>
         <p className="mt-1 text-sm text-fg-muted">{SEARCH_LABELS.subtitle}</p>
       </div>
 

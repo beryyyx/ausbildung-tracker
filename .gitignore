@@ -49,3 +49,6 @@ next-env.d.ts
 
 # uploaded PDFs (local data, see src/features/profile/storage.ts)
 /uploads/
+
+# чужие скиллы Claude Code
+.claude/skills/

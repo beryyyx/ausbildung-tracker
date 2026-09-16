@@ -33,7 +33,7 @@ export default async function ProfilePage() {
   return (
     <div className="mx-auto max-w-3xl space-y-stack">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <h1 className="text-3xl font-semibold tracking-tight">
           {PROFILE_TEXTS.pageTitle}
         </h1>
         <p className="mt-1 text-sm text-fg-muted">{PROFILE_TEXTS.pageHint}</p>

@@ -1,5 +1,6 @@
 "use client";
 
+import { RefreshCw } from "lucide-react";
 import { useActionState, type ReactNode } from "react";
 
 import { buttonClass } from "@/components/button";
@@ -41,6 +42,7 @@ export function SyncForm({ action, persisted, disabled, actions }: Props) {
             aria-busy={pending}
             className={buttonClass("primary")}
           >
+            <RefreshCw aria-hidden size={14} className={pending ? "animate-spin" : ""} />
             {pending ? GMAIL_TEXTS.syncing : GMAIL_TEXTS.sync}
           </button>
         </form>
