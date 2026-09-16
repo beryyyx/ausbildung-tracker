@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 
+import { buttonClass } from "@/components/button";
 import { Field, inputClass } from "@/components/form/field";
 import { FormMessage } from "@/components/form/form-message";
 
@@ -36,12 +37,12 @@ export function ZeugnisTitleForm({
   return (
     <form action={formAction} className="space-y-2" noValidate>
       {state.message && <FormMessage kind="error">{state.message}</FormMessage>}
-      <div className="flex items-end gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
         <Field
           name={inputId}
           label={ZEUGNIS_FIELD_LABELS.title}
           error={error}
-          className="flex-1"
+          className="min-w-0 flex-1"
         >
           <input
             id={inputId}
@@ -53,11 +54,7 @@ export function ZeugnisTitleForm({
             className={inputClass}
           />
         </Field>
-        <button
-          type="submit"
-          disabled={pending}
-          className="rounded-md border border-edge px-3 py-control text-sm font-medium hover:bg-surface-hover disabled:cursor-wait disabled:opacity-60"
-        >
+        <button type="submit" disabled={pending} aria-busy={pending} className={buttonClass("secondary")}>
           {pending ? PROFILE_TEXTS.saving : PROFILE_TEXTS.save}
         </button>
       </div>
@@ -94,12 +91,12 @@ export function GradeAddForm({ action, idPrefix, range }: GradeAddFormProps) {
   return (
     <form action={formAction} className="space-y-2" noValidate>
       {state.message && <FormMessage kind="error">{state.message}</FormMessage>}
-      <div className="flex items-end gap-3">
+      <div className="grid grid-cols-[1fr_6rem] gap-3 sm:grid-cols-[1fr_6rem_auto] sm:items-end">
         <Field
           name={subjectId}
           label={GRADE_FIELD_LABELS.subject}
           error={errorOf("subject")}
-          className="flex-1"
+          className="min-w-0"
         >
           <input
             id={subjectId}
@@ -112,12 +109,7 @@ export function GradeAddForm({ action, idPrefix, range }: GradeAddFormProps) {
             className={inputClass}
           />
         </Field>
-        <Field
-          name={gradeId}
-          label={GRADE_FIELD_LABELS.grade}
-          error={errorOf("grade")}
-          className="w-24"
-        >
+        <Field name={gradeId} label={GRADE_FIELD_LABELS.grade} error={errorOf("grade")}>
           <select
             id={gradeId}
             name="grade"
@@ -135,9 +127,10 @@ export function GradeAddForm({ action, idPrefix, range }: GradeAddFormProps) {
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-accent px-3 py-control text-sm font-medium text-accent-on hover:bg-accent-hover disabled:cursor-wait disabled:opacity-60"
+          aria-busy={pending}
+          className={`${buttonClass("secondary")} col-span-2 sm:col-span-1`}
         >
-          {pending ? PROFILE_TEXTS.adding : PROFILE_TEXTS.add}
+          {pending ? PROFILE_TEXTS.adding : PROFILE_TEXTS.addGrade}
         </button>
       </div>
     </form>

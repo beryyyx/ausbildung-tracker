@@ -21,6 +21,7 @@ export const GMAIL_TEXTS = {
   reconnect: "Подключить заново",
 
   connectedAs: "Подключён ящик",
+  connectedBadge: "Подключено",
   lastSync: "Последняя синхронизация",
   neverSynced: "ещё не было",
   expiredTitle: "Подключение истекло",
@@ -44,6 +45,7 @@ export const GMAIL_TEXTS = {
     "Совпадений мало. Если письма от компаний точно были, правила сопоставления стоит поправить.",
 
   suggestionsTitle: "Предложения",
+  suggestionsEmptyTitle: "Предложений нет",
   suggestionsEmpty:
     "Новых предложений нет. Нажмите «Синхронизировать», чтобы проверить почту.",
   suggestionsEmptyNotConnected: "Предложения появятся после подключения и синхронизации.",

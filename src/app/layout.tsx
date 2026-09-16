@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { buttonClass } from "@/components/button";
 import { NavLink } from "@/components/nav-link";
 import { SettingsMenu } from "@/features/settings/components/settings-menu";
 import { readSettings } from "@/features/settings/cookies";
@@ -36,12 +37,16 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="flex min-h-full flex-col bg-canvas text-fg">
         <header className="border-b border-edge bg-surface">
-          <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4">
-            <Link href="/" className="flex items-center gap-2 py-3 font-semibold tracking-tight">
+          {/* На узком экране навигация уходит на вторую строку и прокручивается по горизонтали. */}
+          <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-4 px-4">
+            <Link
+              href="/"
+              className="mr-auto flex items-center gap-2 py-3 font-semibold tracking-tight md:mr-0"
+            >
               <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-sm bg-accent" />
               Ausbildung Tracker
             </Link>
-            <nav className="flex items-center gap-1 text-sm">
+            <nav className="order-last -mx-1 flex basis-full items-center gap-1 overflow-x-auto text-sm md:order-none md:mx-0 md:basis-auto md:flex-1">
               {NAV_ITEMS.map((item) => (
                 <NavLink key={item.href} href={item.href}>
                   {item.label}
@@ -50,11 +55,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             </nav>
             <div className="flex items-center gap-2 py-2">
               <SettingsMenu settings={settings} />
-              <Link
-                href="/applications/new"
-                className="rounded-md bg-accent px-3 py-1.5 text-sm font-medium text-accent-on hover:bg-accent-hover"
-              >
-                + Добавить
+              <Link href="/applications/new" className={buttonClass("primary", "sm")}>
+                <span aria-hidden>+</span>
+                <span className="sr-only sm:not-sr-only">Добавить</span>
               </Link>
             </div>
           </div>

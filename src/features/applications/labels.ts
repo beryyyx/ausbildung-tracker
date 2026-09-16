@@ -18,6 +18,15 @@ export const STATUS_STYLES: Record<ApplicationStatus, string> = {
   offer: "border-success-edge bg-success-soft text-success",
 };
 
+/** Цвет точки статуса там, где нужен только цвет, например в чипах фильтра. */
+export const STATUS_DOT_STYLES: Record<ApplicationStatus, string> = {
+  draft: "bg-neutral",
+  sent: "bg-info",
+  invitation: "bg-warning",
+  rejected: "bg-danger",
+  offer: "bg-success",
+};
+
 export const FIELD_LABELS = {
   company: "Компания",
   position: "Профессия (Ausbildungsberuf)",
@@ -46,4 +55,25 @@ export const LIST_LABELS = {
   of: "из",
   nothingFoundTitle: "Ничего не найдено",
   nothingFoundHint: "Под выбранные статусы и текст поиска не подходит ни одна заявка.",
+  emptyTitle: "Заявок пока нет",
+  emptyHint: "Добавьте первую заявку или импортируйте вакансию из поиска, чтобы отслеживать ответы и дедлайны.",
+  addFirst: "Добавить заявку",
+  goSearch: "Открыть поиск",
+  newApplication: "Новая заявка",
+  edit: "Изменить",
+  openListing: "Открыть объявление",
+  columns: {
+    company: "Компания",
+    position: "Профессия",
+    city: "Город",
+    commute: "В пути",
+    status: "Статус",
+    appliedAt: "Отправлено",
+    deadline: "Дедлайн",
+    actions: "Действия",
+  },
+  deadlinePassed: "прошёл",
+  deadlineToday: "сегодня",
+  deadlineTomorrow: "завтра",
+  deadlineInDays: "через",
 } as const;

@@ -49,7 +49,7 @@ export default async function GmailPage({ searchParams }: PageProps<"/gmail">) {
   }));
 
   return (
-    <div className="mx-auto max-w-3xl space-y-8">
+    <div className="mx-auto max-w-3xl space-y-stack">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">{GMAIL_TEXTS.pageTitle}</h1>
         <p className="mt-1 text-sm text-fg-muted">{GMAIL_TEXTS.pageHint}</p>

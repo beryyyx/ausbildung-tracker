@@ -2,6 +2,7 @@
 
 import { useActionState, type ReactNode } from "react";
 
+import { buttonClass } from "@/components/button";
 import { FormMessage } from "@/components/form/form-message";
 
 import type { SyncFormState } from "../actions";
@@ -32,12 +33,13 @@ export function SyncForm({ action, persisted, disabled, actions }: Props) {
 
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-wrap items-center gap-2">
         <form action={formAction}>
           <button
             type="submit"
             disabled={pending || disabled}
-            className="rounded-md bg-accent px-4 py-control text-sm font-medium text-accent-on hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
+            aria-busy={pending}
+            className={buttonClass("primary")}
           >
             {pending ? GMAIL_TEXTS.syncing : GMAIL_TEXTS.sync}
           </button>

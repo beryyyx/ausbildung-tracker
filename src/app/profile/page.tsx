@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { Panel } from "@/components/panel";
 import { saveProfile } from "@/features/profile/actions";
 import { FilesSection } from "@/features/profile/components/files-section";
 import { InternshipsSection } from "@/features/profile/components/internships-section";
@@ -30,7 +31,7 @@ export default async function ProfilePage() {
   ]);
 
   return (
-    <div className="mx-auto max-w-3xl space-y-8">
+    <div className="mx-auto max-w-3xl space-y-stack">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">
           {PROFILE_TEXTS.pageTitle}
@@ -38,15 +39,18 @@ export default async function ProfilePage() {
         <p className="mt-1 text-sm text-fg-muted">{PROFILE_TEXTS.pageHint}</p>
       </div>
 
-      <div className="rounded-lg border border-edge bg-surface p-card shadow-card">
+      <Panel title={SECTION_TITLES.personal} hint={PROFILE_TEXTS.personalHint}>
         <ProfileForm
           action={saveProfile}
           initialValues={profile ? profileToFormValues(profile) : undefined}
         />
-      </div>
+      </Panel>
 
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold">{SECTION_TITLES.grades}</h2>
+        <div>
+          <h2 className="text-lg font-semibold">{SECTION_TITLES.grades}</h2>
+          <p className="mt-0.5 text-sm text-fg-muted">{PROFILE_TEXTS.gradesHint}</p>
+        </div>
         <div className="grid gap-4 lg:grid-cols-2">
           {zeugnisse.map((data) => (
             <ZeugnisSection key={data.slot} data={data} />

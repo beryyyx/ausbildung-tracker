@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { useState, useTransition } from "react";
 
-import { inputClass } from "@/components/form/field";
+import { buttonClass } from "@/components/button";
+import { Field, inputClass } from "@/components/form/field";
 import type { GmailMessage } from "@/db/schema";
+import { StatusBadge } from "@/features/applications/components/status-badge";
 import { STATUS_LABELS } from "@/features/applications/labels";
 import { formatDateTime } from "@/lib/dates";
 
@@ -48,11 +50,10 @@ export function SuggestionRow({ message, candidateIds, applications }: Props) {
       : candidates.length === 1
         ? GMAIL_TEXTS.singleCandidate
         : multipleCandidatesText(candidates.length);
-  const statusHint = message.suggestedStatus
-    ? `${GMAIL_TEXTS.suggestedPrefix}: ${STATUS_LABELS[message.suggestedStatus]}`
-    : GMAIL_TEXTS.suggestedUnknown;
 
   const sender = formatSender(message);
+  const applicationFieldId = `suggestion-${message.id}-application`;
+  const statusFieldId = `suggestion-${message.id}-status`;
 
   const run = (call: () => Promise<{ ok: true } | { ok: false; message: string }>) => {
     setError(null);
@@ -63,23 +64,28 @@ export function SuggestionRow({ message, candidateIds, applications }: Props) {
   };
 
   return (
-    <li className="space-y-3 px-4 py-4">
-      <div className="min-w-0">
-        <p className="text-xs text-fg-muted">
+    <li className={`space-y-3 px-card py-item ${pending ? "opacity-70" : ""}`} aria-busy={pending}>
+      <div className="min-w-0 space-y-1">
+        <p className="truncate text-xs text-fg-subtle" title={sender}>
           {formatDateTime(message.receivedAt)} · {GMAIL_TEXTS.from} {sender}
         </p>
-        <p className="font-medium text-fg">
-          {message.subject || GMAIL_TEXTS.noSubject}
-        </p>
-        <p className="mt-1 text-xs text-fg-muted">
-          {candidatesHint}. {statusHint}.
+        <p className="font-medium text-fg">{message.subject || GMAIL_TEXTS.noSubject}</p>
+        <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-fg-muted">
+          <span>{candidatesHint}.</span>
+          {message.suggestedStatus ? (
+            <span className="inline-flex items-center gap-1.5">
+              {GMAIL_TEXTS.suggestedPrefix}: <StatusBadge status={message.suggestedStatus} />
+            </span>
+          ) : (
+            <span>{GMAIL_TEXTS.suggestedUnknown}.</span>
+          )}
         </p>
       </div>
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-        <label className="block flex-1 text-sm font-medium text-fg">
-          {GMAIL_TEXTS.application}
+      <div className="grid gap-3 sm:grid-cols-[1fr_12rem]">
+        <Field name={applicationFieldId} label={GMAIL_TEXTS.application}>
           <select
+            id={applicationFieldId}
             value={applicationId}
             disabled={pending}
             onChange={(event) => setApplicationId(event.target.value)}
@@ -105,11 +111,11 @@ export function SuggestionRow({ message, candidateIds, applications }: Props) {
               </optgroup>
             )}
           </select>
-        </label>
+        </Field>
 
-        <label className="block text-sm font-medium text-fg sm:w-48">
-          {GMAIL_TEXTS.status}
+        <Field name={statusFieldId} label={GMAIL_TEXTS.status}>
           <select
+            id={statusFieldId}
             value={status}
             disabled={pending}
             onChange={(event) => setStatus(event.target.value)}
@@ -122,46 +128,43 @@ export function SuggestionRow({ message, candidateIds, applications }: Props) {
               </option>
             ))}
           </select>
-        </label>
-
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            disabled={pending || !applicationId || !status}
-            onClick={() =>
-              run(() => applySuggestion(message.id, Number(applicationId), status))
-            }
-            className="rounded-md bg-accent px-3 py-control text-sm font-medium text-accent-on hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {pending ? GMAIL_TEXTS.applying : GMAIL_TEXTS.apply}
-          </button>
-          <button
-            type="button"
-            disabled={pending || !applicationId}
-            onClick={() => run(() => noteSuggestion(message.id, Number(applicationId)))}
-            className="rounded-md border border-edge bg-surface px-3 py-control text-sm font-medium text-fg hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {GMAIL_TEXTS.note}
-          </button>
-          <button
-            type="button"
-            disabled={pending}
-            onClick={() => run(() => dismissSuggestion(message.id))}
-            className="rounded-md border border-edge bg-surface px-3 py-control text-sm font-medium text-fg hover:bg-surface-hover disabled:cursor-wait disabled:opacity-60"
-          >
-            {GMAIL_TEXTS.notRelated}
-          </button>
-        </div>
+        </Field>
       </div>
 
-      {applicationId && (
-        <Link
-          href={`/applications/${applicationId}`}
-          className="text-xs text-fg-muted underline-offset-2 hover:underline"
+      <div className="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          disabled={pending || !applicationId || !status}
+          onClick={() => run(() => applySuggestion(message.id, Number(applicationId), status))}
+          className={buttonClass("primary", "sm")}
         >
-          {GMAIL_TEXTS.openApplication}
-        </Link>
-      )}
+          {pending ? GMAIL_TEXTS.applying : GMAIL_TEXTS.apply}
+        </button>
+        <button
+          type="button"
+          disabled={pending || !applicationId}
+          onClick={() => run(() => noteSuggestion(message.id, Number(applicationId)))}
+          className={buttonClass("secondary", "sm")}
+        >
+          {GMAIL_TEXTS.note}
+        </button>
+        <button
+          type="button"
+          disabled={pending}
+          onClick={() => run(() => dismissSuggestion(message.id))}
+          className={buttonClass("ghost", "sm")}
+        >
+          {GMAIL_TEXTS.notRelated}
+        </button>
+        {applicationId && (
+          <Link
+            href={`/applications/${applicationId}`}
+            className="ml-auto text-xs text-accent-fg underline-offset-2 hover:underline"
+          >
+            {GMAIL_TEXTS.openApplication}
+          </Link>
+        )}
+      </div>
 
       {error && (
         <p className="text-sm text-danger" role="alert">

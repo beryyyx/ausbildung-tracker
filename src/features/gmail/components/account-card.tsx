@@ -1,3 +1,5 @@
+import { buttonClass } from "@/components/button";
+import { Panel } from "@/components/panel";
 import type { GmailAccount } from "@/db/schema";
 import { formatDateTime } from "@/lib/dates";
 
@@ -27,41 +29,48 @@ function persistedSummary(account: GmailAccount): SyncSummary | null {
 
 /** Подключённый ящик: адрес, дата синхронизации, кнопки. При истёкшем подключении — предупреждение. */
 export function AccountCard({ account }: { account: GmailAccount }) {
+  const lastSync = account.lastSyncedAt
+    ? formatDateTime(account.lastSyncedAt)
+    : GMAIL_TEXTS.neverSynced;
+
   return (
-    <section className="space-y-4 rounded-lg border border-edge bg-surface p-card shadow-card">
-      <div>
-        <p className="text-sm text-fg-muted">{GMAIL_TEXTS.connectedAs}</p>
-        <p className="text-lg font-semibold">{account.email}</p>
-        <p className="mt-1 text-sm text-fg-muted">
-          {GMAIL_TEXTS.lastSync}:{" "}
-          {account.lastSyncedAt
-            ? formatDateTime(account.lastSyncedAt)
-            : GMAIL_TEXTS.neverSynced}
-        </p>
-      </div>
-
-      {account.reconnectRequired && (
-        <div
-          role="alert"
-          className="space-y-2 rounded-md border border-warning-edge bg-warning-soft px-4 py-row text-sm text-warning"
+    <Panel
+      title={account.email}
+      hint={`${GMAIL_TEXTS.connectedAs}. ${GMAIL_TEXTS.lastSync}: ${lastSync}`}
+      aside={
+        <span
+          className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs font-medium ${
+            account.reconnectRequired
+              ? "border-warning-edge bg-warning-soft text-warning"
+              : "border-success-edge bg-success-soft text-success"
+          }`}
         >
-          <p className="font-medium">{GMAIL_TEXTS.expiredTitle}</p>
-          <p>{GMAIL_TEXTS.expiredHint}</p>
-          <a
-            href={CONNECT_PATH}
-            className="inline-block rounded-md bg-accent px-3 py-1.5 font-medium text-accent-on hover:bg-accent-hover"
+          <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current" />
+          {account.reconnectRequired ? GMAIL_TEXTS.expiredTitle : GMAIL_TEXTS.connectedBadge}
+        </span>
+      }
+    >
+      <div className="space-y-4">
+        {account.reconnectRequired && (
+          <div
+            role="alert"
+            className="space-y-2 rounded-md border border-warning-edge bg-warning-soft px-4 py-3 text-sm text-warning"
           >
-            {GMAIL_TEXTS.reconnect}
-          </a>
-        </div>
-      )}
+            <p className="font-medium">{GMAIL_TEXTS.expiredTitle}</p>
+            <p>{GMAIL_TEXTS.expiredHint}</p>
+            <a href={CONNECT_PATH} className={buttonClass("primary", "sm")}>
+              {GMAIL_TEXTS.reconnect}
+            </a>
+          </div>
+        )}
 
-      <SyncForm
-        action={syncGmail}
-        persisted={persistedSummary(account)}
-        disabled={account.reconnectRequired}
-        actions={<DisconnectButton action={disconnectGmail} />}
-      />
-    </section>
+        <SyncForm
+          action={syncGmail}
+          persisted={persistedSummary(account)}
+          disabled={account.reconnectRequired}
+          actions={<DisconnectButton action={disconnectGmail} />}
+        />
+      </div>
+    </Panel>
   );
 }

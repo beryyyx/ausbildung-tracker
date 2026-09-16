@@ -2,6 +2,8 @@
 
 import { useTransition } from "react";
 
+import { buttonClass } from "@/components/button";
+
 import { deleteApplication } from "../actions";
 
 export function DeleteButton({ id }: { id: number }) {
@@ -17,7 +19,8 @@ export function DeleteButton({ id }: { id: number }) {
         }
         startTransition(() => deleteApplication(id));
       }}
-      className="rounded-md border border-danger-edge px-3 py-1.5 text-sm font-medium text-danger hover:bg-danger-soft disabled:cursor-wait disabled:opacity-60"
+      aria-busy={pending}
+      className={buttonClass("danger")}
     >
       {pending ? "Удаляем…" : "Удалить"}
     </button>

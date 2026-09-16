@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 
+import { buttonClass } from "@/components/button";
 import { Field, inputClass } from "@/components/form/field";
 import { FormMessage } from "@/components/form/form-message";
 
@@ -26,12 +27,12 @@ export function LanguageAddForm({ action }: Props) {
   return (
     <form action={formAction} className="space-y-2" noValidate>
       {state.message && <FormMessage kind="error">{state.message}</FormMessage>}
-      <div className="flex items-end gap-3">
+      <div className="grid grid-cols-[1fr_8rem] gap-3 sm:grid-cols-[1fr_8rem_auto] sm:items-end">
         <Field
           name="language"
           label={LANGUAGE_FIELD_LABELS.language}
           error={errorOf("language")}
-          className="flex-1"
+          className="min-w-0"
         >
           <input
             id="language"
@@ -44,12 +45,7 @@ export function LanguageAddForm({ action }: Props) {
             className={inputClass}
           />
         </Field>
-        <Field
-          name="level"
-          label={LANGUAGE_FIELD_LABELS.level}
-          error={errorOf("level")}
-          className="w-32"
-        >
+        <Field name="level" label={LANGUAGE_FIELD_LABELS.level} error={errorOf("level")}>
           <select
             id="level"
             name="level"
@@ -67,9 +63,10 @@ export function LanguageAddForm({ action }: Props) {
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-accent px-3 py-control text-sm font-medium text-accent-on hover:bg-accent-hover disabled:cursor-wait disabled:opacity-60"
+          aria-busy={pending}
+          className={`${buttonClass("secondary")} col-span-2 sm:col-span-1`}
         >
-          {pending ? PROFILE_TEXTS.adding : PROFILE_TEXTS.add}
+          {pending ? PROFILE_TEXTS.adding : PROFILE_TEXTS.addLanguage}
         </button>
       </div>
     </form>

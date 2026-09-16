@@ -95,6 +95,7 @@ src/app/                       маршруты App Router: только сбо�
   layout.tsx                   читает настройки оформления из cookie, ставит data-атрибуты на <html>,
                                шапка с навигацией и меню оформления, lang="ru"
   globals.css                  все токены оформления: цвета, акценты, плотность, шрифты, радиусы
+  loading.tsx                  скелет на время перехода между страницами, один на все маршруты
   page.tsx                     список заявок с фильтром по статусам и поиском (GET-форма, без JS)
   applications/new/page.tsx    создание
   applications/[id]/page.tsx   редактирование и удаление
@@ -105,6 +106,10 @@ src/app/                       маршруты App Router: только сбо�
   api/gmail/connect/route.ts   state в cookie и редирект на экран согласия Google
   api/gmail/callback/route.ts  обмен кода на токены, сохранение аккаунта, редирект на /gmail
   not-found.tsx                русская 404
+src/components/button.tsx      buttonClass(variant, size): классы кнопок и ссылок-кнопок со всеми состояниями
+src/components/badge.tsx       бейдж-пилюля, цвет через классы X-edge/X-soft/X, опциональная точка
+src/components/panel.tsx       карточка с шапкой (Panel) и класс карточки без отступа (panelClass)
+src/components/empty-state.tsx пустое состояние: иконка, заголовок, подсказка, действие; compact для блоков
 src/components/form/           общие части форм: Field (подпись + поле + ошибка), inputClass, FormMessage
 src/components/nav-link.tsx    пункт навигации в шапке с подсветкой текущего раздела (usePathname)
 src/db/index.ts                клиент Drizzle, единственная точка доступа к БД
@@ -300,7 +305,16 @@ drizzle.config.ts              конфиг drizzle-kit
 - Токены: фон `canvas` (страница), `surface` (карточки, поля), `surface-muted` (шапки таблиц),
   `surface-hover`; текст `fg`, `fg-muted`, `fg-subtle` (только мелкий вспомогательный текст);
   границы `edge`, `edge-muted`; тень `shadow-card`; плотность `py-row` (ячейки таблиц),
-  `py-control` (поля и кнопки), `p-card` (внутренний отступ карточки).
+  `py-control` (поля и кнопки), `p-card` (внутренний отступ карточки), `py-item` (строки списков:
+  вакансии, письма, файлы), `space-y-stack` (воздух между блоками страницы).
+- Кнопки только через `buttonClass` (`src/components/button.tsx`): primary, secondary, danger, ghost,
+  размеры md и sm. Там же наведение, `focus-visible`, нажатие и `disabled`; классы кнопок в компонентах
+  не дублировать. Карточки через `Panel`/`panelClass`, бейджи через `Badge`, пустые состояния через
+  `EmptyState`.
+- Таблица заявок на экране уже 768px раскладывается в карточки одним CSS-блоком `.table-cards`
+  в `globals.css`: подписи столбцов берутся из `data-label` ячейки, вторая разметка не нужна.
+  `display: grid` снимает с элементов таблицы их роли, поэтому `role="table|rowgroup|row|columnheader|cell"`
+  проставлены явно и при добавлении столбца их нужно сохранять.
 - Акцент: `bg-accent` + `text-accent-on` для главных кнопок, `hover:bg-accent-hover`,
   `text-accent-fg` для ссылок, `bg-accent-soft` для выбранного элемента, `ring-accent` для фокуса.
   `accent-hover` и `accent-soft` считаются через `color-mix`, у акцента всего два значения на тему.

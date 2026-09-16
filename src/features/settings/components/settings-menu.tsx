@@ -17,7 +17,7 @@ export function SettingsMenu({ settings }: { settings: UiSettings }) {
       className="relative"
       summary={
         <summary
-          className="flex cursor-pointer list-none items-center gap-2 rounded-md border border-edge bg-surface px-2.5 py-1.5 text-sm text-fg-muted hover:bg-surface-hover hover:text-fg [&::-webkit-details-marker]:hidden"
+          className="flex cursor-pointer list-none items-center gap-2 rounded-md border border-edge bg-surface px-2.5 py-1 text-xs font-medium text-fg-muted shadow-card outline-none transition-colors hover:bg-surface-hover hover:text-fg focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas [&::-webkit-details-marker]:hidden"
           aria-label={SETTINGS_TEXTS.menu}
         >
           <span aria-hidden className="inline-block h-3 w-3 rounded-full bg-accent" />
@@ -92,7 +92,7 @@ function Option({
       name={name}
       value={value}
       aria-pressed={active}
-      className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs font-medium ${
+      className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
         active
           ? "border-accent bg-accent-soft text-accent-fg"
           : "border-edge bg-surface text-fg-muted hover:bg-surface-hover hover:text-fg"

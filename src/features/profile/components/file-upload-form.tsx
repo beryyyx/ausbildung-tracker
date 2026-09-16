@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 
+import { buttonClass } from "@/components/button";
 import { Field, inputClass } from "@/components/form/field";
 import { FormMessage } from "@/components/form/form-message";
 
@@ -23,8 +24,8 @@ export function FileUploadForm({ action }: Props) {
   return (
     <form action={formAction} className="space-y-2" noValidate>
       {state.message && <FormMessage kind="error">{state.message}</FormMessage>}
-      <div className="flex items-end gap-3">
-        <Field name="file" label={FILE_FIELD_LABELS.file} error={error} className="flex-1">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+        <Field name="file" label={FILE_FIELD_LABELS.file} error={error} className="min-w-0 flex-1">
           <input
             id="file"
             name="file"
@@ -32,18 +33,14 @@ export function FileUploadForm({ action }: Props) {
             accept="application/pdf,.pdf"
             required
             aria-invalid={Boolean(error)}
-            className={`${inputClass} file:mr-3 file:rounded file:border-0 file:bg-surface-muted file:px-2 file:py-1 file:text-sm`}
+            className={`${inputClass} cursor-pointer file:mr-3 file:cursor-pointer file:rounded file:border-0 file:bg-surface-muted file:px-2 file:py-0.5 file:text-sm file:font-medium file:text-fg`}
           />
         </Field>
-        <button
-          type="submit"
-          disabled={pending}
-          className="rounded-md bg-accent px-3 py-control text-sm font-medium text-accent-on hover:bg-accent-hover disabled:cursor-wait disabled:opacity-60"
-        >
+        <button type="submit" disabled={pending} aria-busy={pending} className={buttonClass("secondary")}>
           {pending ? PROFILE_TEXTS.uploading : PROFILE_TEXTS.upload}
         </button>
       </div>
-      <p className="text-xs text-fg-muted">{PROFILE_TEXTS.filesHint}</p>
+      <p className="text-xs text-fg-subtle">{PROFILE_TEXTS.filesHint}</p>
     </form>
   );
 }

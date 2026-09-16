@@ -2,6 +2,8 @@
 
 import { useTransition } from "react";
 
+import { buttonClass } from "@/components/button";
+
 import { PROFILE_TEXTS } from "../labels";
 
 /**
@@ -29,7 +31,8 @@ export function RowDeleteButton({
         if (confirmText && !window.confirm(confirmText)) return;
         startTransition(() => action());
       }}
-      className="text-sm text-danger hover:underline disabled:cursor-wait disabled:opacity-60"
+      aria-busy={pending}
+      className={`${buttonClass("ghost", "sm")} hover:bg-danger-soft hover:text-danger`}
     >
       {pending ? PROFILE_TEXTS.deleting : PROFILE_TEXTS.delete}
     </button>

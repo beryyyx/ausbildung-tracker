@@ -1,6 +1,9 @@
+import { EmptyState } from "@/components/empty-state";
+import { Panel } from "@/components/panel";
 import type { ProfileFile } from "@/db/schema";
 import { formatDateTime } from "@/lib/dates";
 import { formatFileSize } from "@/lib/file-size";
+import { pluralize } from "@/lib/plural";
 
 import { deleteFile, uploadFile } from "../actions";
 import { PROFILE_TEXTS, SECTION_TITLES } from "../labels";
@@ -14,42 +17,53 @@ export function fileUrl(id: number): string {
 }
 
 export function FilesSection({ files }: { files: ProfileFile[] }) {
+  const count = files.length;
+
   return (
-    <section className="space-y-4 rounded-lg border border-edge bg-surface p-card shadow-card">
-      <h2 className="text-lg font-semibold">{SECTION_TITLES.files}</h2>
-
-      {files.length === 0 ? (
-        <p className="text-sm text-fg-muted">{PROFILE_TEXTS.emptyFiles}</p>
-      ) : (
-        <ul className="divide-y divide-edge-muted text-sm">
-          {files.map((file) => (
-            <li key={file.id} className="flex items-center justify-between gap-4 py-2">
-              <div className="min-w-0">
-                <a
-                  href={fileUrl(file.id)}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="font-medium text-fg underline-offset-2 hover:underline"
+    <Panel
+      title={SECTION_TITLES.files}
+      aside={count > 0 ? `${count} ${pluralize(count, PROFILE_TEXTS.count.files)}` : undefined}
+    >
+      <div className="space-y-5">
+        {count === 0 ? (
+          <EmptyState compact title={PROFILE_TEXTS.emptyFiles} hint={PROFILE_TEXTS.emptyFilesHint} />
+        ) : (
+          <ul className="divide-y divide-edge-muted text-sm">
+            {files.map((file) => (
+              <li key={file.id} className="flex items-center gap-3 py-row">
+                <span
+                  aria-hidden
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-danger-edge bg-danger-soft text-[10px] font-semibold text-danger"
                 >
-                  {file.fileName}
-                </a>
-                <p className="text-xs text-fg-muted">
-                  {formatFileSize(file.sizeBytes)}, {formatDateTime(file.createdAt)}
-                </p>
-              </div>
-              <RowDeleteButton
-                action={deleteFile.bind(null, file.id)}
-                confirmText={PROFILE_TEXTS.confirmDeleteFile}
-                ariaLabel={`${PROFILE_TEXTS.delete}: ${file.fileName}`}
-              />
-            </li>
-          ))}
-        </ul>
-      )}
+                  PDF
+                </span>
+                <div className="min-w-0 flex-1">
+                  <a
+                    href={fileUrl(file.id)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block truncate rounded-sm font-medium text-fg outline-none hover:text-accent-fg hover:underline focus-visible:ring-2 focus-visible:ring-accent"
+                  >
+                    {file.fileName}
+                  </a>
+                  <p className="text-xs text-fg-subtle">
+                    {formatFileSize(file.sizeBytes)}, {formatDateTime(file.createdAt)}
+                  </p>
+                </div>
+                <RowDeleteButton
+                  action={deleteFile.bind(null, file.id)}
+                  confirmText={PROFILE_TEXTS.confirmDeleteFile}
+                  ariaLabel={`${PROFILE_TEXTS.delete}: ${file.fileName}`}
+                />
+              </li>
+            ))}
+          </ul>
+        )}
 
-      <div className="border-t border-edge pt-4">
-        <FileUploadForm action={uploadFile} />
+        <div className="border-t border-edge-muted pt-4">
+          <FileUploadForm action={uploadFile} />
+        </div>
       </div>
-    </section>
+    </Panel>
   );
 }

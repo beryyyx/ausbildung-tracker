@@ -2,6 +2,8 @@
 
 import { useTransition } from "react";
 
+import { buttonClass } from "@/components/button";
+
 import { GMAIL_TEXTS } from "../labels";
 
 /** «Отключить» с подтверждением: токены удаляются из базы безвозвратно. */
@@ -16,7 +18,8 @@ export function DisconnectButton({ action }: { action: () => Promise<void> }) {
         if (!window.confirm(GMAIL_TEXTS.confirmDisconnect)) return;
         startTransition(() => action());
       }}
-      className="rounded-md border border-edge bg-surface px-4 py-control text-sm font-medium text-danger hover:bg-danger-soft disabled:cursor-wait disabled:opacity-60"
+      aria-busy={pending}
+      className={buttonClass("danger")}
     >
       {pending ? GMAIL_TEXTS.disconnecting : GMAIL_TEXTS.disconnect}
     </button>

@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 
+import { buttonClass } from "@/components/button";
 import { Field, inputClass } from "@/components/form/field";
 import { FormMessage } from "@/components/form/form-message";
 
@@ -107,9 +108,10 @@ export function InternshipAddForm({ action }: Props) {
       <button
         type="submit"
         disabled={pending}
-        className="rounded-md bg-accent px-3 py-control text-sm font-medium text-accent-on hover:bg-accent-hover disabled:cursor-wait disabled:opacity-60"
+        aria-busy={pending}
+        className={`${buttonClass("secondary")} w-full sm:w-auto`}
       >
-        {pending ? PROFILE_TEXTS.adding : PROFILE_TEXTS.add}
+        {pending ? PROFILE_TEXTS.adding : PROFILE_TEXTS.addInternship}
       </button>
     </form>
   );

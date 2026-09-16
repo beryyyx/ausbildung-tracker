@@ -2,6 +2,7 @@
 
 import { useActionState, type ComponentProps } from "react";
 
+import { buttonClass } from "@/components/button";
 import { Field, inputClass } from "@/components/form/field";
 import { FormMessage } from "@/components/form/form-message";
 
@@ -76,75 +77,74 @@ export function ProfileForm({ action, initialValues }: Props) {
         <FormMessage kind="success">{PROFILE_TEXTS.saved}</FormMessage>
       )}
 
-      <section className="space-y-4">
-        <h2 className="text-lg font-semibold">{SECTION_TITLES.personal}</h2>
-        <div className="grid gap-5 sm:grid-cols-2">
-          <Field
-            name="firstName"
-            label={PROFILE_FIELD_LABELS.firstName}
-            error={errorOf("firstName")}
-            required
-          >
-            {textInput("firstName", { required: true, autoComplete: "given-name" })}
-          </Field>
-          <Field
-            name="lastName"
-            label={PROFILE_FIELD_LABELS.lastName}
-            error={errorOf("lastName")}
-            required
-          >
-            {textInput("lastName", { required: true, autoComplete: "family-name" })}
-          </Field>
-          <Field
-            name="birthDate"
-            label={PROFILE_FIELD_LABELS.birthDate}
-            error={errorOf("birthDate")}
-          >
-            {textInput("birthDate", { type: "date" })}
-          </Field>
-          <Field
-            name="phone"
-            label={PROFILE_FIELD_LABELS.phone}
-            error={errorOf("phone")}
-          >
-            {textInput("phone", { type: "tel", autoComplete: "tel" })}
-          </Field>
-          <Field
-            name="street"
-            label={PROFILE_FIELD_LABELS.street}
-            error={errorOf("street")}
-            className="sm:col-span-2"
-          >
-            {textInput("street", { autoComplete: "street-address" })}
-          </Field>
-          <Field
-            name="postalCode"
-            label={PROFILE_FIELD_LABELS.postalCode}
-            error={errorOf("postalCode")}
-          >
-            {textInput("postalCode", { inputMode: "numeric", autoComplete: "postal-code" })}
-          </Field>
-          <Field
-            name="city"
-            label={PROFILE_FIELD_LABELS.city}
-            error={errorOf("city")}
-          >
-            {textInput("city", { autoComplete: "address-level2" })}
-          </Field>
-          <Field
-            name="email"
-            label={PROFILE_FIELD_LABELS.email}
-            error={errorOf("email")}
-            className="sm:col-span-2"
-          >
-            {textInput("email", { type: "email", autoComplete: "email" })}
-          </Field>
-        </div>
-      </section>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field
+          name="firstName"
+          label={PROFILE_FIELD_LABELS.firstName}
+          error={errorOf("firstName")}
+          required
+        >
+          {textInput("firstName", { required: true, autoComplete: "given-name" })}
+        </Field>
+        <Field
+          name="lastName"
+          label={PROFILE_FIELD_LABELS.lastName}
+          error={errorOf("lastName")}
+          required
+        >
+          {textInput("lastName", { required: true, autoComplete: "family-name" })}
+        </Field>
+        <Field
+          name="birthDate"
+          label={PROFILE_FIELD_LABELS.birthDate}
+          error={errorOf("birthDate")}
+        >
+          {textInput("birthDate", { type: "date" })}
+        </Field>
+        <Field
+          name="phone"
+          label={PROFILE_FIELD_LABELS.phone}
+          error={errorOf("phone")}
+        >
+          {textInput("phone", { type: "tel", autoComplete: "tel" })}
+        </Field>
+        <Field
+          name="street"
+          label={PROFILE_FIELD_LABELS.street}
+          error={errorOf("street")}
+          className="sm:col-span-2"
+        >
+          {textInput("street", { autoComplete: "street-address" })}
+        </Field>
+        <Field
+          name="postalCode"
+          label={PROFILE_FIELD_LABELS.postalCode}
+          error={errorOf("postalCode")}
+        >
+          {textInput("postalCode", { inputMode: "numeric", autoComplete: "postal-code" })}
+        </Field>
+        <Field
+          name="city"
+          label={PROFILE_FIELD_LABELS.city}
+          error={errorOf("city")}
+        >
+          {textInput("city", { autoComplete: "address-level2" })}
+        </Field>
+        <Field
+          name="email"
+          label={PROFILE_FIELD_LABELS.email}
+          error={errorOf("email")}
+          className="sm:col-span-2"
+        >
+          {textInput("email", { type: "email", autoComplete: "email" })}
+        </Field>
+      </div>
 
-      <section className="space-y-4">
-        <h2 className="text-lg font-semibold">{SECTION_TITLES.school}</h2>
-        <div className="grid gap-5 sm:grid-cols-2">
+      <fieldset className="space-y-4 border-t border-edge-muted pt-5">
+        <legend className="float-left mb-4 text-xs font-medium tracking-wide text-fg-subtle uppercase">
+          {SECTION_TITLES.school}
+        </legend>
+        <div className="clear-left grid gap-4 sm:grid-cols-2">
           <Field
             name="schoolName"
             label={PROFILE_FIELD_LABELS.schoolName}
@@ -187,14 +187,10 @@ export function ProfileForm({ action, initialValues }: Props) {
             })}
           </Field>
         </div>
-      </section>
+      </fieldset>
 
-      <div className="border-t border-edge pt-5">
-        <button
-          type="submit"
-          disabled={pending}
-          className="rounded-md bg-accent px-4 py-control text-sm font-medium text-accent-on hover:bg-accent-hover disabled:cursor-wait disabled:opacity-60"
-        >
+      <div className="border-t border-edge-muted pt-5">
+        <button type="submit" disabled={pending} aria-busy={pending} className={buttonClass("primary")}>
           {pending ? PROFILE_TEXTS.saving : PROFILE_TEXTS.save}
         </button>
       </div>

@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useState, useTransition } from "react";
 
+import { buttonClass } from "@/components/button";
+
 import { importJobListing, type ImportResult } from "../actions";
 import { SEARCH_LABELS } from "../labels";
 import type { JobListing } from "../types";
@@ -24,7 +26,7 @@ export function ImportButton({
 
   if (result?.status === "created" || result?.status === "exists") {
     return (
-      <span className="inline-flex items-center gap-2 whitespace-nowrap text-sm">
+      <span className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap text-sm">
         <span
           className={
             result.status === "created"
@@ -38,7 +40,7 @@ export function ImportButton({
         </span>
         <Link
           href={`/applications/${result.applicationId}`}
-          className="text-fg underline hover:text-fg"
+          className={buttonClass("secondary", "sm")}
         >
           {SEARCH_LABELS.open}
         </Link>
@@ -47,16 +49,17 @@ export function ImportButton({
   }
 
   return (
-    <div className="flex flex-col items-end gap-1">
+    <div className="flex shrink-0 flex-col gap-1 sm:items-end">
       <button
         type="button"
         disabled={pending}
+        aria-busy={pending}
         onClick={() => {
           startTransition(async () => {
             setResult(await importJobListing(listing));
           });
         }}
-        className="whitespace-nowrap rounded-md border border-edge bg-surface px-3 py-1.5 text-sm font-medium text-fg hover:bg-surface-hover disabled:cursor-wait disabled:opacity-60"
+        className={`${buttonClass("secondary", "sm")} w-full sm:w-auto`}
       >
         {pending ? SEARCH_LABELS.importing : SEARCH_LABELS.import}
       </button>

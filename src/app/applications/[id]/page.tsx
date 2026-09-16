@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { Panel } from "@/components/panel";
 import { updateApplication } from "@/features/applications/actions";
 import { ApplicationForm } from "@/features/applications/components/application-form";
 import { DeleteButton } from "@/features/applications/components/delete-button";
@@ -25,10 +26,10 @@ export default async function ApplicationPage({
   if (!application) notFound();
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3">
+    <div className="mx-auto max-w-2xl space-y-stack">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             <h1 className="text-2xl font-semibold tracking-tight">
               {application.company}
             </h1>
@@ -48,13 +49,13 @@ export default async function ApplicationPage({
         <DeleteButton id={application.id} />
       </div>
 
-      <div className="rounded-lg border border-edge bg-surface p-card shadow-card">
+      <Panel>
         <ApplicationForm
           action={updateApplication.bind(null, application.id)}
           initialValues={applicationToFormValues(application)}
           submitLabel="Сохранить"
         />
-      </div>
+      </Panel>
 
       <p className="text-xs text-fg-subtle">
         Создано {formatDateTime(application.createdAt)}, изменено{" "}

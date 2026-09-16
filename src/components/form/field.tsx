@@ -2,7 +2,10 @@ import type { ReactNode } from "react";
 
 /** Классы для input, select и textarea во всех формах приложения. */
 export const inputClass =
-  "mt-1 block w-full rounded-md border border-edge bg-surface px-3 py-control text-sm text-fg shadow-card outline-none placeholder:text-fg-subtle focus:border-accent focus:ring-1 focus:ring-accent aria-invalid:border-danger";
+  "mt-1 block w-full rounded-md border border-edge bg-surface px-3 py-control text-sm text-fg outline-none transition-[border-color,box-shadow] duration-100 " +
+  "placeholder:text-fg-subtle hover:border-neutral-edge focus:border-accent focus:ring-1 focus:ring-accent " +
+  "disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-fg-muted " +
+  "aria-invalid:border-danger aria-invalid:focus:ring-danger";
 
 /**
  * Подпись, поле и ошибка под ним. `name` должен совпадать с id элемента

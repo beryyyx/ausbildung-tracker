@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { useActionState } from "react";
 
+import { buttonClass } from "@/components/button";
 import { Field, inputClass } from "@/components/form/field";
+import { FormMessage } from "@/components/form/form-message";
 
 import { FIELD_LABELS, STATUS_LABELS } from "../labels";
 import type {
@@ -52,14 +54,7 @@ export function ApplicationForm({ action, initialValues, submitLabel }: Props) {
 
   return (
     <form action={formAction} className="space-y-5" noValidate>
-      {state.message && (
-        <p
-          role="alert"
-          className="rounded-md border border-danger-edge bg-danger-soft px-3 py-2 text-sm text-danger"
-        >
-          {state.message}
-        </p>
-      )}
+      {state.message && <FormMessage kind="error">{state.message}</FormMessage>}
 
       <div className="grid gap-5 sm:grid-cols-2">
         <Field
@@ -213,15 +208,11 @@ export function ApplicationForm({ action, initialValues, submitLabel }: Props) {
         </Field>
       </div>
 
-      <div className="flex items-center gap-3 border-t border-edge pt-5">
-        <button
-          type="submit"
-          disabled={pending}
-          className="rounded-md bg-accent px-4 py-control text-sm font-medium text-accent-on hover:bg-accent-hover disabled:cursor-wait disabled:opacity-60"
-        >
+      <div className="flex items-center gap-2 border-t border-edge-muted pt-5">
+        <button type="submit" disabled={pending} aria-busy={pending} className={buttonClass("primary")}>
           {pending ? "Сохраняем…" : submitLabel}
         </button>
-        <Link href="/" className="text-sm text-fg-muted hover:text-fg">
+        <Link href="/" className={buttonClass("ghost")}>
           Отмена
         </Link>
       </div>

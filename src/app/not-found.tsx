@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { buttonClass } from "@/components/button";
+
 export default function NotFound() {
   return (
     <div className="mx-auto max-w-md py-16 text-center">
@@ -10,7 +12,7 @@ export default function NotFound() {
       </p>
       <Link
         href="/"
-        className="mt-6 inline-block rounded-md bg-accent px-4 py-control text-sm font-medium text-accent-on hover:bg-accent-hover"
+        className={`mt-6 ${buttonClass("primary")}`}
       >
         К списку заявок
       </Link>
