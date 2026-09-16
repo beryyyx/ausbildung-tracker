@@ -40,10 +40,6 @@ export type ApplicationFormValues = Record<ApplicationField, string>;
 /** Что сервер возвращает форме после отправки. */
 export type ApplicationFormState = FormState<ApplicationField>;
 
-export function parseApplicationForm(formData: FormData) {
-  return parseForm(applicationInputSchema, formData);
-}
-
 /** Запись из базы → значения для полей формы. */
 export function applicationToFormValues(
   application: Application,

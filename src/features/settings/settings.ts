@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 /**
  * Настройки оформления. Хранятся в cookie, чтобы layout.tsx прочитал их на
  * сервере и отдал страницу сразу в нужной теме, без вспышки светлой темы.
@@ -27,3 +29,10 @@ export const DEFAULT_SETTINGS: UiSettings = {
 
 /** Имена cookie совпадают с ключами настроек. */
 export const SETTING_KEYS = Object.keys(DEFAULT_SETTINGS) as (keyof UiSettings)[];
+
+/** Одна кнопка меню отправляет одно поле; остальные не приходят вовсе. */
+export const settingsSchema = z.object({
+  theme: z.enum(THEMES).optional(),
+  accent: z.enum(ACCENTS).optional(),
+  density: z.enum(DENSITIES).optional(),
+});

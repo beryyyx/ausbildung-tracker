@@ -12,11 +12,12 @@ import {
   type NewApplication,
 } from "@/db/schema";
 import { todayIso } from "@/lib/dates";
+import { parseForm } from "@/lib/form-schema";
 
 import { insertDatedNote } from "./notes";
 import {
   NOTES_MAX_LENGTH,
-  parseApplicationForm,
+  applicationInputSchema,
   type ApplicationFormState,
 } from "./validation";
 
@@ -29,7 +30,7 @@ export async function createApplication(
   _previous: ApplicationFormState,
   formData: FormData,
 ): Promise<ApplicationFormState> {
-  const parsed = parseApplicationForm(formData);
+  const parsed = parseForm(applicationInputSchema, formData);
   if (!parsed.success) return parsed.state;
 
   await db.insert(applications).values(parsed.data);
@@ -47,7 +48,7 @@ export async function updateApplication(
     return { message: "Некорректный номер заявки." };
   }
 
-  const parsed = parseApplicationForm(formData);
+  const parsed = parseForm(applicationInputSchema, formData);
   if (!parsed.success) return parsed.state;
 
   const updated = await db

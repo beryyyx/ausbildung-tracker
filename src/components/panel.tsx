@@ -11,19 +11,17 @@ export function Panel({
   title,
   hint,
   aside,
-  id,
   className,
   children,
 }: {
   title?: string;
   hint?: string;
   aside?: ReactNode;
-  id?: string;
   className?: string;
   children: ReactNode;
 }) {
   return (
-    <section id={id} className={`${panelClass} ${className ?? ""}`}>
+    <section className={`${panelClass} ${className ?? ""}`}>
       {title && (
         <header className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1 border-b border-edge-muted px-card py-item">
           <div>

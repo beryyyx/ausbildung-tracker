@@ -90,25 +90,17 @@ export type ParseResult<Schema extends z.ZodObject> =
     }
   | { success: false; state: FormState<FieldOf<Schema>> };
 
-/** Сырые строки из полей формы по ключам схемы, ещё не проверенные. */
-export function readFormValues<Schema extends z.ZodObject>(
-  schema: Schema,
-  formData: FormData,
-): Record<FieldOf<Schema>, string> {
-  const values = {} as Record<FieldOf<Schema>, string>;
-  for (const field of Object.keys(schema.shape) as FieldOf<Schema>[]) {
-    const raw = formData.get(field);
-    values[field] = typeof raw === "string" ? raw : "";
-  }
-  return values;
-}
-
 /** Разбор FormData по схеме: либо данные для записи, либо состояние формы с ошибками. */
 export function parseForm<Schema extends z.ZodObject>(
   schema: Schema,
   formData: FormData,
 ): ParseResult<Schema> {
-  const values = readFormValues(schema, formData);
+  // Сырые строки по ключам схемы: их возвращаем форме, чтобы она не очистилась после ошибки.
+  const values = {} as Record<FieldOf<Schema>, string>;
+  for (const field of Object.keys(schema.shape) as FieldOf<Schema>[]) {
+    const raw = formData.get(field);
+    values[field] = typeof raw === "string" ? raw : "";
+  }
   const result = schema.safeParse(values);
 
   if (result.success) {

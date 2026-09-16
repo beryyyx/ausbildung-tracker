@@ -2,8 +2,7 @@
 
 import { cookies } from "next/headers";
 
-import { SETTING_KEYS } from "./settings";
-import { settingsSchema } from "./validation";
+import { SETTING_KEYS, settingsSchema } from "./settings";
 
 const ONE_YEAR = 60 * 60 * 24 * 365;
 

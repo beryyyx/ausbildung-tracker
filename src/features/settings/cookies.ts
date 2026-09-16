@@ -2,8 +2,7 @@ import "server-only";
 
 import { cookies } from "next/headers";
 
-import { DEFAULT_SETTINGS, SETTING_KEYS, type UiSettings } from "./settings";
-import { settingsSchema } from "./validation";
+import { DEFAULT_SETTINGS, SETTING_KEYS, settingsSchema, type UiSettings } from "./settings";
 
 /** Настройки из cookie. Каждое значение проверяется отдельно: испорченная cookie сбрасывает только себя. */
 export async function readSettings(): Promise<UiSettings> {
