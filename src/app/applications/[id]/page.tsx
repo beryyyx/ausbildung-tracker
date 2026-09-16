@@ -8,7 +8,8 @@ import { DeleteButton } from "@/features/applications/components/delete-button";
 import { StatusBadge } from "@/features/applications/components/status-badge";
 import { SOURCE_LABELS } from "@/features/applications/labels";
 import { getApplication } from "@/features/applications/queries";
-import { applicationToFormValues } from "@/features/applications/validation";
+import { applicationInputSchema } from "@/features/applications/validation";
+import { toFormValues } from "@/lib/form-schema";
 import { formatDateTime } from "@/lib/dates";
 
 export const dynamic = "force-dynamic";
@@ -52,7 +53,7 @@ export default async function ApplicationPage({
       <Panel>
         <ApplicationForm
           action={updateApplication.bind(null, application.id)}
-          initialValues={applicationToFormValues(application)}
+          initialValues={toFormValues(applicationInputSchema, application)}
           submitLabel="Сохранить"
         />
       </Panel>

@@ -37,33 +37,25 @@ export const optionalDate = z.preprocess(
   z.iso.date({ error: "Дата должна быть в формате ГГГГ-ММ-ДД" }).nullable(),
 );
 
+/** Текст из поля → число; пустое поле → null, чтобы «не заполнено» не превратилось в ноль. */
+const toInt = (value: unknown) => {
+  const cleaned = emptyToNull(value);
+  return typeof cleaned === "string" ? Number(cleaned) : cleaned;
+};
+
+const intRange = (min: number, max: number, emptyMessage = "Введите число") =>
+  z
+    .number({ error: emptyMessage })
+    .int({ error: "Только целое число" })
+    .min(min, `Не меньше ${min}`)
+    .max(max, `Не больше ${max}`);
+
 /** Целое число из текстового поля. Пустое поле — null, не ноль. */
 export const optionalInt = (min: number, max: number) =>
-  z.preprocess(
-    (value) => {
-      const cleaned = emptyToNull(value);
-      return typeof cleaned === "string" ? Number(cleaned) : cleaned;
-    },
-    z
-      .number({ error: "Введите число" })
-      .int({ error: "Только целое число" })
-      .min(min, `Не меньше ${min}`)
-      .max(max, `Не больше ${max}`)
-      .nullable(),
-  );
+  z.preprocess(toInt, intRange(min, max).nullable());
 
 export const requiredInt = (min: number, max: number, emptyMessage: string) =>
-  z.preprocess(
-    (value) => {
-      const cleaned = emptyToNull(value);
-      return typeof cleaned === "string" ? Number(cleaned) : cleaned;
-    },
-    z
-      .number({ error: emptyMessage })
-      .int({ error: "Только целое число" })
-      .min(min, `Не меньше ${min}`)
-      .max(max, `Не больше ${max}`),
-  );
+  z.preprocess(toInt, intRange(min, max, emptyMessage));
 
 /** Что сервер возвращает форме после отправки. */
 export type FormState<Field extends string> = {
@@ -89,6 +81,22 @@ export type ParseResult<Schema extends z.ZodObject> =
       values: Record<FieldOf<Schema>, string>;
     }
   | { success: false; state: FormState<FieldOf<Schema>> };
+
+/**
+ * Значения полей формы из записи БД (или пустого объекта для новой формы):
+ * ключи берутся из схемы, null → "", числа → строки, лишние поля записи пропускаются.
+ */
+export function toFormValues<Schema extends z.ZodObject>(
+  schema: Schema,
+  row: Partial<Record<FieldOf<Schema>, unknown>>,
+): Record<FieldOf<Schema>, string> {
+  const values = {} as Record<FieldOf<Schema>, string>;
+  for (const field of Object.keys(schema.shape) as FieldOf<Schema>[]) {
+    const value = row[field];
+    values[field] = value == null ? "" : String(value);
+  }
+  return values;
+}
 
 /** Разбор FormData по схеме: либо данные для записи, либо состояние формы с ошибками. */
 export function parseForm<Schema extends z.ZodObject>(

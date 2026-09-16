@@ -15,7 +15,8 @@ import {
   listLanguages,
   listZeugnisse,
 } from "@/features/profile/queries";
-import { profileToFormValues } from "@/features/profile/validation";
+import { profileInputSchema } from "@/features/profile/validation";
+import { toFormValues } from "@/lib/form-schema";
 
 export const dynamic = "force-dynamic";
 
@@ -42,7 +43,7 @@ export default async function ProfilePage() {
       <Panel title={SECTION_TITLES.personal} hint={PROFILE_TEXTS.personalHint}>
         <ProfileForm
           action={saveProfile}
-          initialValues={profile ? profileToFormValues(profile) : undefined}
+          initialValues={toFormValues(profileInputSchema, profile ?? {})}
         />
       </Panel>
 

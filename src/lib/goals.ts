@@ -4,8 +4,6 @@
  * Через год поменять здесь.
  */
 export const TARGET_START_YEAR = 2027;
-/** Старт Ausbildung: август целевого года. */
-export const TARGET_START = `${TARGET_START_YEAR}-08-01`;
 
 /** Главная цель. Заявки принимают с октября 2026 и только на своём сайте. */
 export const BOFROST_APPLY_FROM = "2026-10-01";

@@ -3,7 +3,6 @@ import { z } from "zod";
 import {
   LANGUAGE_LEVELS,
   SCHOOL_DEGREES,
-  type Profile,
   type ZeugnisScale,
 } from "@/db/schema";
 import {
@@ -43,24 +42,6 @@ export type ProfileInput = z.infer<typeof profileInputSchema>;
 export type ProfileField = FieldOf<typeof profileInputSchema>;
 export type ProfileFormValues = Record<ProfileField, string>;
 export type ProfileFormState = FormState<ProfileField>;
-
-/** Запись из базы → значения для полей формы. */
-export function profileToFormValues(profile: Profile): ProfileFormValues {
-  return {
-    firstName: profile.firstName,
-    lastName: profile.lastName,
-    birthDate: profile.birthDate ?? "",
-    street: profile.street ?? "",
-    postalCode: profile.postalCode ?? "",
-    city: profile.city ?? "",
-    phone: profile.phone ?? "",
-    email: profile.email ?? "",
-    schoolName: profile.schoolName ?? "",
-    schoolDegree: profile.schoolDegree ?? "",
-    graduationYear:
-      profile.graduationYear === null ? "" : String(profile.graduationYear),
-  };
-}
 
 /* ---------- Zeugnis и оценки ---------- */
 

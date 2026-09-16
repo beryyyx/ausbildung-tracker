@@ -1,4 +1,5 @@
 import type { ApplicationSource } from "@/db/schema";
+import { KindError } from "@/lib/errors";
 
 /** Параметры одного запроса к Arbeitsagentur: только то, что источник умеет сам. */
 export type JobSourceQuery = {
@@ -57,14 +58,4 @@ export type JobSearchResult = {
 export type JobSourceErrorKind = "network" | "timeout" | "http" | "invalid-response";
 
 /** Ошибка обращения к источнику. По kind интерфейс подбирает понятное сообщение. */
-export class JobSourceError extends Error {
-  readonly kind: JobSourceErrorKind;
-  readonly status?: number;
-
-  constructor(kind: JobSourceErrorKind, message: string, status?: number) {
-    super(message);
-    this.name = "JobSourceError";
-    this.kind = kind;
-    this.status = status;
-  }
-}
+export class JobSourceError extends KindError<JobSourceErrorKind> {}

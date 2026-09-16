@@ -23,21 +23,8 @@ type Props = {
     state: ProfileFormState,
     formData: FormData,
   ) => Promise<ProfileFormState>;
-  initialValues?: Partial<ProfileFormValues>;
-};
-
-const EMPTY_VALUES: ProfileFormValues = {
-  firstName: "",
-  lastName: "",
-  birthDate: "",
-  street: "",
-  postalCode: "",
-  city: "",
-  phone: "",
-  email: "",
-  schoolName: "",
-  schoolDegree: "",
-  graduationYear: "",
+  /** Значения из базы или пустые: toFormValues(profileInputSchema, …) на сервере. */
+  initialValues: ProfileFormValues;
 };
 
 /** Личные данные и школа: одна форма, один Server Action. После сохранения остаёмся на странице. */
@@ -47,11 +34,7 @@ export function ProfileForm({ action, initialValues }: Props) {
     {},
   );
 
-  const values: ProfileFormValues = {
-    ...EMPTY_VALUES,
-    ...initialValues,
-    ...state.values,
-  };
+  const values: ProfileFormValues = { ...initialValues, ...state.values };
 
   const errorOf = (field: ProfileField) => state.errors?.[field]?.[0];
 

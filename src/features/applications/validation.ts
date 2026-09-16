@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { APPLICATION_STATUSES, type Application } from "@/db/schema";
+import { APPLICATION_STATUSES } from "@/db/schema";
 import {
   emptyToNull,
   httpUrl,
@@ -38,21 +38,3 @@ export type ApplicationFormValues = Record<ApplicationField, string>;
 
 /** Что сервер возвращает форме после отправки. */
 export type ApplicationFormState = FormState<ApplicationField>;
-
-/** Запись из базы → значения для полей формы. */
-export function applicationToFormValues(
-  application: Application,
-): ApplicationFormValues {
-  return {
-    company: application.company,
-    position: application.position,
-    city: application.city ?? "",
-    url: application.url ?? "",
-    appliedAt: application.appliedAt ?? "",
-    status: application.status,
-    deadline: application.deadline ?? "",
-    notes: application.notes ?? "",
-    commuteMinutes:
-      application.commuteMinutes === null ? "" : String(application.commuteMinutes),
-  };
-}

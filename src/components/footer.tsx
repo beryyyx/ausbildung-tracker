@@ -6,11 +6,13 @@ import {
   BOFROST_CAREERS_URL,
   HOME_TOWN,
   MAX_COMMUTE_MINUTES,
-  TARGET_START,
+  TARGET_START_YEAR,
   monthsFromToday,
 } from "@/lib/goals";
 import { pluralize } from "@/lib/plural";
 
+/** Старт Ausbildung: август целевого года. */
+const TARGET_START = `${TARGET_START_YEAR}-08-01`;
 const ICON = "mr-1.5 inline-block align-[-2px] text-fg-subtle";
 
 /** «· через N месяцев», пусто, если дата уже наступила. */

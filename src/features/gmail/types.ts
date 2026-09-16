@@ -1,4 +1,5 @@
 import type { ApplicationStatus } from "@/db/schema";
+import { KindError } from "@/lib/errors";
 
 /**
  * Виды ошибок модуля Gmail. По kind интерфейс подбирает понятное сообщение,
@@ -14,17 +15,7 @@ export type GmailErrorKind =
   | "http"
   | "invalid-response";
 
-export class GmailError extends Error {
-  readonly kind: GmailErrorKind;
-  readonly status?: number;
-
-  constructor(kind: GmailErrorKind, message: string, status?: number) {
-    super(message);
-    this.name = "GmailError";
-    this.kind = kind;
-    this.status = status;
-  }
-}
+export class GmailError extends KindError<GmailErrorKind> {}
 
 /** Токены после обмена кода или обновления. refreshToken есть только при обмене кода. */
 export type TokenSet = {

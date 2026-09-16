@@ -20,20 +20,9 @@ type Props = {
     state: ApplicationFormState,
     formData: FormData,
   ) => Promise<ApplicationFormState>;
-  initialValues?: Partial<ApplicationFormValues>;
+  /** Значения из базы или пустые для новой формы: toFormValues(applicationInputSchema, …) на сервере. */
+  initialValues: ApplicationFormValues;
   submitLabel: string;
-};
-
-const EMPTY_VALUES: ApplicationFormValues = {
-  company: "",
-  position: "",
-  city: "",
-  url: "",
-  appliedAt: "",
-  status: "draft",
-  deadline: "",
-  notes: "",
-  commuteMinutes: "",
 };
 
 export function ApplicationForm({ action, initialValues, submitLabel }: Props) {
@@ -42,13 +31,8 @@ export function ApplicationForm({ action, initialValues, submitLabel }: Props) {
     FormData
   >(action, {});
 
-  // После неудачной отправки показываем то, что ввёл пользователь,
-  // иначе значения из базы, иначе пустую форму.
-  const values: ApplicationFormValues = {
-    ...EMPTY_VALUES,
-    ...initialValues,
-    ...state.values,
-  };
+  // После неудачной отправки показываем то, что ввёл пользователь, иначе начальные значения.
+  const values: ApplicationFormValues = { ...initialValues, ...state.values };
 
   const errorOf = (field: ApplicationField) => state.errors?.[field]?.[0];
 

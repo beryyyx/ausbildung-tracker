@@ -93,10 +93,8 @@ async function fetchBatch(query: JobSearchQuery): Promise<SourceBatch> {
     resolvedLocation: firstPage.resolvedLocation,
   };
 
-  if (cache.size >= CACHE_MAX_ENTRIES) {
-    const oldestKey = cache.keys().next().value;
-    if (oldestKey !== undefined) cache.delete(oldestKey);
-  }
+  // ponytail: при переполнении сбрасываем весь кэш, один пользователь редко ходит по 20 запросам сразу.
+  if (cache.size >= CACHE_MAX_ENTRIES) cache.clear();
   cache.set(key, { expiresAt: Date.now() + CACHE_TTL_MS, batch });
 
   return batch;
@@ -116,17 +114,14 @@ function byStartDateThenDistance(a: JobListing, b: JobListing): number {
  * Вакансии без даты не выбрасываем: они идут отдельно, в конец списка.
  */
 function selectByStart(listings: JobListing[], startFrom: string | null) {
-  const dated = listings
-    .filter(
+  const sorted = [...listings].sort(byStartDateThenDistance);
+  return {
+    dated: sorted.filter(
       (listing) =>
-        listing.startDate !== null &&
-        (startFrom === null || listing.startDate >= startFrom),
-    )
-    .sort(byStartDateThenDistance);
-  const undated = listings
-    .filter((listing) => listing.startDate === null)
-    .sort(byStartDateThenDistance);
-  return { dated, undated };
+        listing.startDate !== null && (startFrom === null || listing.startDate >= startFrom),
+    ),
+    undated: sorted.filter((listing) => listing.startDate === null),
+  };
 }
 
 /** Выполняет поиск, применяет фильтр по дате и помечает уже импортированные вакансии. Ошибки не бросает. */

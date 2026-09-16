@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { Panel } from "@/components/panel";
 import { createApplication } from "@/features/applications/actions";
 import { ApplicationForm } from "@/features/applications/components/application-form";
+import { applicationInputSchema } from "@/features/applications/validation";
+import { toFormValues } from "@/lib/form-schema";
 
 export const metadata: Metadata = { title: "Новая заявка" };
 
@@ -16,7 +18,11 @@ export default function NewApplicationPage() {
         </p>
       </div>
       <Panel>
-        <ApplicationForm action={createApplication} submitLabel="Создать заявку" />
+        <ApplicationForm
+          action={createApplication}
+          initialValues={toFormValues(applicationInputSchema, { status: "draft" })}
+          submitLabel="Создать заявку"
+        />
       </Panel>
     </div>
   );
