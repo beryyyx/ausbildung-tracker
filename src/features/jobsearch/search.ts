@@ -1,12 +1,11 @@
 import "server-only";
 
+import { searchArbeitsagentur } from "./arbeitsagentur";
 import { findApplicationIdsByRefnr } from "./queries";
-import { DEFAULT_JOB_SOURCE, getJobSource } from "./sources";
 import {
   JobSourceError,
   type JobListing,
   type JobSearchQuery,
-  type JobSource,
   type JobSourceErrorKind,
 } from "./types";
 
@@ -55,11 +54,8 @@ export type SearchOutcome =
 const cache = new Map<string, { expiresAt: number; batch: SourceBatch }>();
 
 /** Первая страница даёт общее число, остальные страницы до лимита забираются параллельно. */
-async function fetchBatch(
-  source: JobSource,
-  query: JobSearchQuery,
-): Promise<SourceBatch> {
-  const key = JSON.stringify([source.id, query.what, query.where, query.radiusKm]);
+async function fetchBatch(query: JobSearchQuery): Promise<SourceBatch> {
+  const key = JSON.stringify([query.what, query.where, query.radiusKm]);
   const cached = cache.get(key);
   if (cached && cached.expiresAt > Date.now()) return cached.batch;
 
@@ -69,14 +65,14 @@ async function fetchBatch(
     radiusKm: query.radiusKm,
     pageSize: SOURCE_PAGE_SIZE,
   };
-  const firstPage = await source.search({ ...base, page: 1 });
+  const firstPage = await searchArbeitsagentur({ ...base, page: 1 });
   const pagesNeeded = Math.min(
     Math.ceil(firstPage.total / SOURCE_PAGE_SIZE),
     FETCH_LIMIT / SOURCE_PAGE_SIZE,
   );
   const otherPages = await Promise.all(
     Array.from({ length: Math.max(0, pagesNeeded - 1) }, (_, index) =>
-      source.search({ ...base, page: index + 2 }),
+      searchArbeitsagentur({ ...base, page: index + 2 }),
     ),
   );
 
@@ -134,12 +130,9 @@ function selectByStart(listings: JobListing[], startFrom: string | null) {
 }
 
 /** Выполняет поиск, применяет фильтр по дате и помечает уже импортированные вакансии. Ошибки не бросает. */
-export async function runJobSearch(
-  query: JobSearchQuery,
-  sourceId = DEFAULT_JOB_SOURCE,
-): Promise<SearchOutcome> {
+export async function runJobSearch(query: JobSearchQuery): Promise<SearchOutcome> {
   try {
-    const batch = await fetchBatch(getJobSource(sourceId), query);
+    const batch = await fetchBatch(query);
     const { dated, undated } = selectByStart(batch.listings, query.startFrom);
     const ordered = [...dated, ...undated];
 

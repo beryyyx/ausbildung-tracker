@@ -1,6 +1,6 @@
 import type { ApplicationSource } from "@/db/schema";
 
-/** Параметры одного запроса к источнику: только то, что источник умеет сам. */
+/** Параметры одного запроса к Arbeitsagentur: только то, что источник умеет сам. */
 export type JobSourceQuery = {
   /** Профессия или ключевые слова, например "Fachinformatiker". */
   what: string;
@@ -67,16 +67,4 @@ export class JobSourceError extends Error {
     this.kind = kind;
     this.status = status;
   }
-}
-
-/**
- * Контракт источника вакансий.
- * Новый источник = файл в sources/, строка в реестре sources/index.ts
- * и значение в APPLICATION_SOURCES в схеме БД.
- */
-export interface JobSource {
-  id: ApplicationSource;
-  /** Название для интерфейса. */
-  name: string;
-  search(query: JobSourceQuery): Promise<JobSearchResult>;
 }

@@ -5,8 +5,9 @@ import { z } from "zod";
 import {
   JobSourceError,
   type JobListing,
-  type JobSource,
-} from "../types";
+  type JobSearchResult,
+  type JobSourceQuery,
+} from "./types";
 
 /**
  * Bundesagentur für Arbeit, Jobsuche API, версия v6.
@@ -98,11 +99,8 @@ function isTimeout(error: unknown): boolean {
   );
 }
 
-export const arbeitsagenturSource: JobSource = {
-  id: "arbeitsagentur",
-  name: "Arbeitsagentur",
-
-  async search(query) {
+/** Одна страница выдачи Arbeitsagentur в едином формате. */
+export async function searchArbeitsagentur(query: JobSourceQuery): Promise<JobSearchResult> {
     const params = new URLSearchParams({
       angebotsart: ANGEBOTSART_AUSBILDUNG,
       wo: query.where,
@@ -144,5 +142,4 @@ export const arbeitsagenturSource: JobSource = {
       pageSize: parsed.data.size,
       resolvedLocation: parsed.data.woOutput?.bereinigterOrt ?? null,
     };
-  },
-};
+}

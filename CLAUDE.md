@@ -62,8 +62,8 @@ SI в близкой фирме предпочтительнее AE в часе 
   по запросу. Новые цвета, отступы и размеры добавлять только в токены `globals.css`
 - Не добавлять аутентификацию, мультипользовательность, тесты и CI без запроса
 - Не начинать модуль Berichtsheft
-- Не расширять список источников вакансий: архитектура на несколько источников,
-  реализация пока одна
+- Не добавлять второй источник вакансий и не заводить под него абстракцию заранее:
+  интерфейс появится из двух реальных реализаций, не из догадок
 
 ## Стек
 
@@ -126,10 +126,9 @@ src/features/<module>/         вся логика модуля, страниц�
   stats.ts                     только у applications: числа для сводки и воронки, считаются из уже загруженных строк
   components/                  таблица, форма, метка статуса, кнопки; у applications ещё stats-panel и status-funnel
   notes.ts                     только у applications: датированные строки в заметках, вставка по дате
-src/features/jobsearch/        поиск вакансий во внешних источниках, см. раздел ниже
-  types.ts                     контракт JobSource и единый формат вакансии JobListing
-  sources/<id>.ts              реализация источника, сейчас только arbeitsagentur.ts
-  sources/index.ts             реестр источников, ключи = APPLICATION_SOURCES из схемы
+src/features/jobsearch/        поиск вакансий в Arbeitsagentur, см. раздел ниже
+  types.ts                     параметры запроса, формат вакансии JobListing, JobSourceError
+  arbeitsagentur.ts            запрос к API и Zod-схема ответа
   search-params.ts             разбор параметров /suche, значения по умолчанию, ссылки пагинации
   search.ts                    запуск поиска, перехват ошибок, пометка уже импортированных
   specialization.ts            распознавание AE/SI/DV/DPA по тексту вакансии
@@ -222,15 +221,13 @@ drizzle.config.ts              конфиг drizzle-kit
 
 ## Источники вакансий
 
-- Контракт `JobSource` в `src/features/jobsearch/types.ts`. Новый источник: файл в `sources/`,
-  строка в реестре `sources/index.ts`, значение в `APPLICATION_SOURCES` в схеме. Страница `/suche`
-  и импорт от источника не зависят. Сейчас реализован только Arbeitsagentur, другие не добавлять
-  без запроса.
+- Источник один, Arbeitsagentur (`arbeitsagentur.ts`), без интерфейса и реестра. `APPLICATION_SOURCES`
+  в схеме и `source` у заявки остаются: это данные об импорте, а не абстракция.
 - Arbeitsagentur: `GET https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v6/jobs`,
   заголовок `X-API-Key: jobboerse-jobsuche` (публичный). Пути `v4`/`v5` из старой документации
   отдают 403 «No match found for request». Параметры: `was`, `wo`, `umkreis`, `angebotsart=4`
   (Ausbildung), `page` с 1 (ноль даёт 400), `size`.
-- Формат ответа v6 снят с живой выдачи 2026-09-05 и описан Zod-схемой в `sources/arbeitsagentur.ts`.
+- Формат ответа v6 снят с живой выдачи 2026-09-05 и описан Zod-схемой в `arbeitsagentur.ts`.
   Особенности: при пустой выдаче поля `ergebnisliste` нет совсем; `externeURL` есть лишь у ~10%
   вакансий, остальным ссылка строится как `https://www.arbeitsagentur.de/jobsuche/jobdetail/<refnr>`;
   `firma`, `stellenangebotsTitel`, `hauptberuf` могут отсутствовать.
