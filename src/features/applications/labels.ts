@@ -108,7 +108,12 @@ export const LIST_LABELS = {
     actions: "Действия",
   },
   deadlinePassed: "прошёл",
-  deadlineToday: "сегодня",
-  deadlineTomorrow: "завтра",
-  deadlineInDays: "через",
 } as const;
+
+/** «прошёл», «сегодня», «завтра», «через N дн.» — по числу дней до дедлайна. */
+export function deadlineHint(days: number): string {
+  if (days < 0) return LIST_LABELS.deadlinePassed;
+  if (days === 0) return "сегодня";
+  if (days === 1) return "завтра";
+  return `через ${days} дн.`;
+}

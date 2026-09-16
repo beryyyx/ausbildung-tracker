@@ -5,8 +5,6 @@ import { daysFromToday } from "@/lib/dates";
 export type ApplicationStats = {
   total: number;
   byStatus: Record<ApplicationStatus, number>;
-  /** Все не-черновики: сколько заявок вообще ушло. */
-  sent: number;
   /** Доля приглашений (приглашение + оффер) среди отправленных, 0–100. null, если отправленных нет. */
   invitationRate: number | null;
   /** Ближайший дедлайн среди черновиков: дата и дней до неё (отрицательное — просрочен). */
@@ -35,5 +33,5 @@ export function summarizeApplications(all: Application[]): ApplicationStats {
     .sort((a, b) => a.days - b.days);
   const nextDeadline = deadlines.find((d) => d.days >= 0) ?? deadlines.at(-1) ?? null;
 
-  return { total: all.length, byStatus, sent, invitationRate, nextDeadline };
+  return { total: all.length, byStatus, invitationRate, nextDeadline };
 }

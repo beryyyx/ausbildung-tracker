@@ -15,7 +15,8 @@ export const HOME_TOWN = "Straelen, 47638";
 export const MAX_COMMUTE_MINUTES = 60;
 
 /** Полных месяцев от сегодня до даты. Отрицательное число, если дата прошла. */
-export function monthsFromToday(iso: string, today = new Date()): number {
+export function monthsFromToday(iso: string): number {
+  const today = new Date();
   const [year, month] = iso.split("-").map(Number);
   return (year - today.getFullYear()) * 12 + (month - 1 - today.getMonth());
 }

@@ -13,7 +13,7 @@ import {
 import type { ApplicationStats } from "../stats";
 
 /** Стадии воронки в порядке движения заявки. Отказ — не стадия, он показан числом отдельно. */
-const STAGES = ["draft", "sent", "invitation", "offer"] as const satisfies readonly ApplicationStatus[];
+const STAGES = ["draft", "sent", "invitation", "offer"] as const;
 
 /**
  * Одна полоса, ширина сегмента пропорциональна числу заявок в статусе.

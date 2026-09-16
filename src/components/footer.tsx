@@ -11,30 +11,33 @@ import {
 } from "@/lib/goals";
 import { pluralize } from "@/lib/plural";
 
-const TEXTS = {
-  start: "Старт Ausbildung",
-  bofrost: "Bofrost принимает заявки с",
-  home: "Дом",
-  commute: "дорога до",
-} as const;
+const ICON = "mr-1.5 inline-block align-[-2px] text-fg-subtle";
+
+/** «· через N месяцев», пусто, если дата уже наступила. */
+function inMonths(iso: string) {
+  const months = monthsFromToday(iso);
+  if (months <= 0) return null;
+  return (
+    <span className="text-fg-subtle">
+      {" "}· через {months} {pluralize(months, ["месяц", "месяца", "месяцев"])}
+    </span>
+  );
+}
 
 /** Подвал: ориентиры из критериев поиска. Прижат к низу, чтобы под короткой страницей не было пустоты. */
 export function Footer() {
-  const startMonths = monthsFromToday(TARGET_START);
-  const bofrostMonths = monthsFromToday(BOFROST_APPLY_FROM);
-
   return (
     <footer className="mt-auto border-t border-edge bg-surface">
       <ul className="mx-auto flex max-w-7xl flex-wrap gap-x-6 gap-y-2 px-4 py-4 text-sm text-fg-muted">
         <li>
-          <Target aria-hidden size={14} className="mr-1.5 inline-block align-[-2px] text-fg-subtle" />
-          {TEXTS.start}: <span className="text-fg">{formatDate(TARGET_START)}</span>
-          {startMonths > 0 && <Countdown months={startMonths} />}
+          <Target aria-hidden size={14} className={ICON} />
+          Старт Ausbildung: <span className="text-fg">{formatDate(TARGET_START)}</span>
+          {inMonths(TARGET_START)}
         </li>
         <li>
-          <CalendarDays aria-hidden size={14} className="mr-1.5 inline-block align-[-2px] text-fg-subtle" />
-          {TEXTS.bofrost} <span className="text-fg">{formatDate(BOFROST_APPLY_FROM)}</span>
-          {bofrostMonths > 0 && <Countdown months={bofrostMonths} />}
+          <CalendarDays aria-hidden size={14} className={ICON} />
+          Bofrost принимает заявки с <span className="text-fg">{formatDate(BOFROST_APPLY_FROM)}</span>
+          {inMonths(BOFROST_APPLY_FROM)}
           <a
             href={BOFROST_CAREERS_URL}
             target="_blank"
@@ -46,19 +49,10 @@ export function Footer() {
           </a>
         </li>
         <li>
-          <Home aria-hidden size={14} className="mr-1.5 inline-block align-[-2px] text-fg-subtle" />
-          {TEXTS.home}: <span className="text-fg">{HOME_TOWN}</span> · {TEXTS.commute}{" "}
-          {MAX_COMMUTE_MINUTES} мин
+          <Home aria-hidden size={14} className={ICON} />
+          Дом: <span className="text-fg">{HOME_TOWN}</span> · дорога до {MAX_COMMUTE_MINUTES} мин
         </li>
       </ul>
     </footer>
-  );
-}
-
-function Countdown({ months }: { months: number }) {
-  return (
-    <span className="text-fg-subtle">
-      {" "}· через {months} {pluralize(months, ["месяц", "месяца", "месяцев"])}
-    </span>
   );
 }

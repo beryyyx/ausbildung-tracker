@@ -5,7 +5,6 @@ import {
   Search,
   SearchX,
   UserRound,
-  type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -82,11 +81,11 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
   );
 }
 
-const STEPS: { key: keyof typeof DASHBOARD_LABELS.steps; href: string; icon: LucideIcon }[] = [
-  { key: "add", href: "/applications/new", icon: ClipboardList },
-  { key: "search", href: "/suche", icon: Search },
-  { key: "profile", href: "/profile", icon: UserRound },
-  { key: "gmail", href: "/gmail", icon: Mail },
+const STEPS = [
+  { href: "/applications/new", icon: ClipboardList, ...DASHBOARD_LABELS.steps.add },
+  { href: "/suche", icon: Search, ...DASHBOARD_LABELS.steps.search },
+  { href: "/profile", icon: UserRound, ...DASHBOARD_LABELS.steps.profile },
+  { href: "/gmail", icon: Mail, ...DASHBOARD_LABELS.steps.gmail },
 ];
 
 /** Заявок ещё нет: вместо одной пустой карточки — четыре следующих шага по разделам. */
@@ -97,8 +96,8 @@ function GettingStarted() {
         {DASHBOARD_LABELS.gettingStarted}
       </h2>
       <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {STEPS.map(({ key, href, icon: Icon }, index) => (
-          <li key={key}>
+        {STEPS.map(({ href, icon: Icon, title, hint }, index) => (
+          <li key={href}>
             <Link
               href={href}
               className={`${panelClass} flex h-full gap-3 p-card outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-accent`}
@@ -112,10 +111,10 @@ function GettingStarted() {
               <span className="min-w-0">
                 <span className="block font-semibold">
                   <span className="mr-1.5 tabular-nums text-fg-subtle">{index + 1}.</span>
-                  {DASHBOARD_LABELS.steps[key].title}
+                  {title}
                 </span>
                 <span className="mt-0.5 block text-sm text-fg-muted">
-                  {DASHBOARD_LABELS.steps[key].hint}
+                  {hint}
                 </span>
               </span>
             </Link>

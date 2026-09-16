@@ -8,7 +8,7 @@ import type { Application, ApplicationStatus } from "@/db/schema";
 import { daysFromToday, formatDate } from "@/lib/dates";
 import { pluralize } from "@/lib/plural";
 
-import { LIST_LABELS } from "../labels";
+import { deadlineHint, LIST_LABELS } from "../labels";
 import { StatusSelect } from "./status-select";
 
 const COLUMNS = LIST_LABELS.columns;
@@ -174,15 +174,9 @@ function DeadlineCell({
     );
   }
   if (days <= 7) {
-    const hint =
-      days === 0
-        ? LIST_LABELS.deadlineToday
-        : days === 1
-          ? LIST_LABELS.deadlineTomorrow
-          : `${LIST_LABELS.deadlineInDays} ${days} дн.`;
     return (
       <Badge className="border-warning-edge bg-warning-soft text-warning">
-        {text} · {hint}
+        {text} · {deadlineHint(days)}
       </Badge>
     );
   }

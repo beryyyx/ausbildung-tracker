@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { panelClass } from "@/components/panel";
 import { formatDate } from "@/lib/dates";
 
-import { DASHBOARD_LABELS, LIST_LABELS, STATUS_ICONS } from "../labels";
+import { DASHBOARD_LABELS, deadlineHint, STATUS_ICONS } from "../labels";
 import type { ApplicationStats } from "../stats";
 
 /** Пять чисел крупно над списком: всего, черновики, ждут ответа, приглашения, ближайший дедлайн. */
@@ -39,27 +39,24 @@ function Tile({
   label,
   value,
   hint,
-  tone,
   className,
+  valueClassName = "text-3xl text-fg",
 }: {
   icon: LucideIcon;
   label: string;
   value: ReactNode;
   hint?: string;
-  /** Цвет числа для дедлайна: близкий жёлтый, просроченный красный. */
-  tone?: "warning" | "danger";
   className?: string;
+  /** Размер и цвет значения: дедлайн — текст, а не число, поэтому мельче и с цветом срочности. */
+  valueClassName?: string;
 }) {
-  const valueColor =
-    tone === "danger" ? "text-danger" : tone === "warning" ? "text-warning" : "text-fg";
-
   return (
     <div className={`${panelClass} flex flex-col gap-1 px-card py-4 ${className ?? ""}`}>
       <dt className="flex items-center justify-between gap-2 text-xs font-medium uppercase tracking-wide text-fg-subtle">
         {label}
         <Icon aria-hidden size={16} className="shrink-0 text-fg-subtle" />
       </dt>
-      <dd className={`text-3xl font-semibold tabular-nums tracking-tight ${valueColor}`}>{value}</dd>
+      <dd className={`font-semibold tabular-nums tracking-tight ${valueClassName}`}>{value}</dd>
       {hint && <dd className="text-xs text-fg-muted">{hint}</dd>}
     </div>
   );
@@ -79,22 +76,13 @@ function DeadlineTile({ deadline }: { deadline: ApplicationStats["nextDeadline"]
   }
 
   const { days } = deadline;
-  const value =
-    days < 0
-      ? LIST_LABELS.deadlinePassed
-      : days === 0
-        ? LIST_LABELS.deadlineToday
-        : days === 1
-          ? LIST_LABELS.deadlineTomorrow
-          : `${days} дн.`;
-
   return (
     <Tile
       icon={CalendarClock}
       label={DASHBOARD_LABELS.nextDeadline}
-      value={value}
+      value={deadlineHint(days)}
       hint={formatDate(deadline.date)}
-      tone={days < 0 ? "danger" : days <= 7 ? "warning" : undefined}
+      valueClassName={`text-2xl ${days < 0 ? "text-danger" : days <= 7 ? "text-warning" : "text-fg"}`}
       className="max-md:col-span-2"
     />
   );
