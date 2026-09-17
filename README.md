@@ -38,6 +38,16 @@ starts, it will also keep the weekly Berichtsheft.
   Message bodies are not stored, only sender, subject and date.
 - **Berichtsheft.** Planned: weekly training reports once the Ausbildung starts.
 
+## Screenshots
+
+**Dashboard.** Summary cards, status funnel and the grouped application list.
+
+![Dashboard with summary, status funnel and application list](docs/dashboard.png)
+
+**Job search.** Ausbildung listings from the Bundesagentur für Arbeit, filtered by earliest start date, with one-click import.
+
+![Job search results from the Arbeitsagentur API](docs/search.png)
+
 ## Stack
 
 - Next.js 16 (App Router, Server Components, Server Actions), React 19,
